@@ -1,19 +1,32 @@
-import { SERVICES } from "@/lib/constants";
+import { SERVICES, type ServiceCategory } from "@/lib/constants";
 
-function CategoryBadge({ category }: { category: "cut" | "shave" | "treatment" }) {
-  const labels: Record<string, string> = {
+function CategoryBadge({ category }: { category: ServiceCategory }) {
+  const labels: Record<ServiceCategory, string> = {
     cut: "Haircut",
-    shave: "Shave",
+    shave: "Beard",
     treatment: "Treatment",
+    specialist: "Specialist",
   };
+
+  const isSpecialist = category === "specialist";
+
   return (
     <span
       className="inline-block text-[10px] font-semibold tracking-[0.2em] uppercase px-2 py-0.5 rounded-sm"
-      style={{
-        background: "rgba(212,175,55,0.1)",
-        color: "var(--vintage-gold)",
-        border: "1px solid rgba(212,175,55,0.2)",
-      }}
+      style={
+        isSpecialist
+          ? {
+              background: "rgba(212,175,55,0.08)",
+              color: "var(--vintage-gold)",
+              border: "1px solid rgba(212,175,55,0.45)",
+              boxShadow: "inset 0 1px 0 rgba(212,175,55,0.12)",
+            }
+          : {
+              background: "rgba(212,175,55,0.1)",
+              color: "var(--vintage-gold)",
+              border: "1px solid rgba(212,175,55,0.2)",
+            }
+      }
     >
       {labels[category]}
     </span>
@@ -28,7 +41,6 @@ export default function ServiceGrid() {
       style={{ background: "var(--background)" }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section header */}
         <div className="mb-14">
           <p
             className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -53,7 +65,6 @@ export default function ServiceGrid() {
           <span className="sera-divider mt-6" aria-hidden="true" />
         </div>
 
-        {/* 2-column grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px"
           style={{ background: "var(--border)" }}>
           {SERVICES.map((service) => (
@@ -72,11 +83,11 @@ export default function ServiceGrid() {
                       color: "var(--foreground)",
                     }}
                   >
-                    ${service.price}
+                    {service.price != null ? `$${service.price}` : "—"}
                   </span>
                 </div>
                 <h3
-                  className="text-xl font-bold mt-3 mb-2 group-hover:text-[var(--vintage-gold)] transition-colors duration-300"
+                  className="text-xl font-bold mt-3 mb-2 group-hover:text-vintage-gold transition-colors duration-300"
                   style={{ fontFamily: "var(--font-playfair)", color: "var(--foreground)" }}
                 >
                   {service.name}
@@ -89,7 +100,6 @@ export default function ServiceGrid() {
                 </p>
               </div>
 
-              {/* Technical data row — monospace 'barber spec' aesthetic */}
               <div
                 className="flex items-center justify-between mt-6 pt-4"
                 style={{ borderTop: "1px solid var(--border)" }}
@@ -101,11 +111,12 @@ export default function ServiceGrid() {
                     color: "var(--muted-foreground)",
                   }}
                 >
-                  QTY: 1 {service.category.toUpperCase()} · ${service.price}
+                  QTY: 1 {service.category.toUpperCase()}
+                  {service.price != null ? ` · $${service.price}` : ""}
                 </span>
                 <span
                   data-cursor="Book"
-                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-[var(--vintage-gold)] cursor-pointer"
+                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-vintage-gold cursor-pointer"
                   style={{ color: "var(--muted-foreground)" }}
                 >
                   Book →
@@ -114,6 +125,14 @@ export default function ServiceGrid() {
             </article>
           ))}
         </div>
+
+        <p
+          className="mt-10 text-xs text-center md:text-left max-w-xl leading-relaxed"
+          style={{ color: "var(--muted-foreground)" }}
+        >
+          Non-Surgical Hair Replacement lives under our Specialist tier — see the NSHR lab for Nate&apos;s
+          consultation-to-maintenance workflow.
+        </p>
       </div>
     </section>
   );

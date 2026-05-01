@@ -1,30 +1,58 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SHOP_META } from "@/lib/constants";
+import { SERVICES, SHOP_META } from "@/lib/constants";
+import { buildOpeningHoursSpecification } from "@/lib/json-ld";
+import { getMasterLogoUrlSchema } from "@/components/ui/media-assets";
 import CustomCursor from "@/components/custom-cursor";
 import PageTransition from "@/components/page-transition";
 
+const siteUrl = "https://hoosierboybarber.com";
+
+const streetAddress = [
+  SHOP_META.address.street,
+  SHOP_META.address.suite,
+]
+  .filter(Boolean)
+  .join(", ");
+
 export const metadata: Metadata = {
-  title: "Hoosier Boy Barbershop — Classic Cuts. Modern Craft.",
+  metadataBase: new URL(siteUrl),
+  title: "Hoosier Boy Barbershop — Noblesville, IN",
   description:
-    "Indianapolis's premier destination for precision haircuts, hot-towel shaves, and the full barber experience. Book your appointment with Hoosier Boy Barbershop today.",
+    "Hoosier Boy Barbershop in Noblesville delivers precision haircuts, beard trims, and Nate Shepherd's Non-Surgical Hair Replacement program. Book your chair online.",
+  openGraph: {
+    title: "Hoosier Boy Barbershop — Noblesville, IN",
+    description:
+      "Precision cuts, beard architecture, and specialist NSHR consultations — Hoosier Boy Barbershop at Town Center Blvd.",
+    url: siteUrl,
+    siteName: SHOP_META.name,
+    locale: "en_US",
+    type: "website",
+  },
 };
 
-/**
- * LocalBusiness JSON-LD for Indianapolis local SEO.
- * Uses "HairSalon" (a sub-type of HealthAndBeautyBusiness) rather than "BarberShop"
- * because Google's Rich Results understand HairSalon and it surfaces in local pack results.
- */
+const haircutPrices = SERVICES.filter((s) => s.price != null).map((s) => s.price!);
+const minPrice = Math.min(...haircutPrices);
+const maxPrice = Math.max(...haircutPrices);
+
+const schemaLogoUrl = getMasterLogoUrlSchema();
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
+  "@id": `${siteUrl}/#barbershop`,
   name: SHOP_META.name,
-  url: "https://hoosierboybarber.com",
-  image: "https://hoosierboybarber.com/og-image.jpg",
+  url: siteUrl,
+  image: [schemaLogoUrl],
+  logo: {
+    "@type": "ImageObject",
+    url: schemaLogoUrl,
+  },
   telephone: SHOP_META.phone,
+  priceRange: `$${minPrice}–$${maxPrice}`,
   address: {
     "@type": "PostalAddress",
-    streetAddress: SHOP_META.address.street,
+    streetAddress,
     addressLocality: SHOP_META.address.city,
     addressRegion: SHOP_META.address.state,
     postalCode: SHOP_META.address.zip,
@@ -35,10 +63,17 @@ const jsonLd = {
     latitude: SHOP_META.coordinates.lat,
     longitude: SHOP_META.coordinates.lng,
   },
-  openingHours: SHOP_META.hours.schema,
-  priceRange: "$$",
+  areaServed: {
+    "@type": "City",
+    name: "Noblesville",
+    containedInPlace: {
+      "@type": "State",
+      name: "Indiana",
+    },
+  },
+  openingHoursSpecification: buildOpeningHoursSpecification(),
   sameAs: [
-    "https://www.booksy.com/en-us/hoosierboybarber",
+    SHOP_META.bookingUrl,
     "https://www.instagram.com/hoosierboybarber",
   ],
 };

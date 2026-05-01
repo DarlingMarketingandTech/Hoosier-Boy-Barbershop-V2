@@ -1,7 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { SITE_CONFIG, SHOP_META } from "@/lib/constants";
+import { formatHeroHoursBadge } from "@/lib/hours";
+import { getMasterLogoUrlHero } from "@/components/ui/media-assets";
 
 import { type Variants } from "framer-motion";
 
@@ -26,16 +30,24 @@ const fadeIn: Variants = {
   }),
 };
 
-/** Mock next-available opening derived from shop hours */
-const NEXT_OPENING = "Today · 9:00 AM";
-
 export default function Hero() {
+  const logoSrc = getMasterLogoUrlHero();
+  const [hoursBadge, setHoursBadge] = useState(() =>
+    formatHeroHoursBadge(new Date())
+  );
+
+  useEffect(() => {
+    const tick = () => setHoursBadge(formatHeroHoursBadge(new Date()));
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      {/* Subtle radial backdrop */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -45,7 +57,6 @@ export default function Hero() {
         }}
       />
 
-      {/* Decorative horizontal rule — top */}
       <motion.div
         initial={{ scaleX: 0, opacity: 0 }}
         animate={{ scaleX: 1, opacity: 1 }}
@@ -55,9 +66,25 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        {/* Live status badge */}
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center">
+        <motion.div
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          custom={0.05}
+          className="mb-8"
+        >
+          <Image
+            src={logoSrc}
+            alt="Hoosier Boy Barbershop crest"
+            width={861}
+            height={902}
+            priority
+            className="w-[min(52vw,280px)] md:w-[min(38vw,340px)] h-auto drop-shadow-[0_12px_48px_rgba(212,175,55,0.12)]"
+            sizes="(max-width: 768px) 52vw, 340px"
+          />
+        </motion.div>
+
         <motion.div
           variants={fadeIn}
           initial="hidden"
@@ -78,11 +105,10 @@ export default function Hero() {
               style={{ background: "var(--vintage-gold)" }}
               aria-hidden="true"
             />
-            Next Opening: {NEXT_OPENING}
+            {hoursBadge}
           </span>
         </motion.div>
 
-        {/* Overline label */}
         <motion.p
           variants={fadeIn}
           initial="hidden"
@@ -94,7 +120,6 @@ export default function Hero() {
           {SHOP_META.address.city}, {SHOP_META.address.state} · Est. 2018
         </motion.p>
 
-        {/* Main heading */}
         <motion.h1
           variants={fadeUp}
           initial="hidden"
@@ -113,7 +138,6 @@ export default function Hero() {
           <span style={{ color: "var(--cardinal-red)" }}>Boy</span>
         </motion.h1>
 
-        {/* Gold divider */}
         <motion.span
           variants={fadeIn}
           initial="hidden"
@@ -128,7 +152,6 @@ export default function Hero() {
           aria-hidden="true"
         />
 
-        {/* Sub-heading */}
         <motion.p
           variants={fadeUp}
           initial="hidden"
@@ -144,7 +167,6 @@ export default function Hero() {
           {SITE_CONFIG.tagline}
         </motion.p>
 
-        {/* CTA row */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -190,7 +212,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll hint */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}

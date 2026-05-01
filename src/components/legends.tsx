@@ -1,6 +1,7 @@
+import Image from "next/image";
 import { BARBERS } from "@/lib/constants";
+import { getBarberPortraitUrl } from "@/components/ui/media-assets";
 
-/** Minimal Instagram brand icon (inline SVG) */
 function InstagramIcon({ size = 12 }: { size?: number }) {
   return (
     <svg
@@ -29,17 +30,16 @@ function BarberCard({
   index: number;
 }) {
   const isEven = index % 2 === 0;
+  const portraitKey = barber.id === "jimmy" ? "jimmy" : "nate";
 
   return (
     <article className="flex flex-col md:flex-row items-stretch gap-0 group">
-      {/* Image placeholder */}
       <div
-        className={`relative w-full md:w-[42%] min-h-[380px] flex-shrink-0 overflow-hidden ${
+        className={`relative w-full md:w-[42%] min-h-[380px] shrink-0 overflow-hidden ${
           isEven ? "md:order-first" : "md:order-last"
         }`}
         style={{ background: "var(--card)" }}
       >
-        {/* Gold accent corner */}
         <div
           className="absolute top-0 left-0 w-12 h-12 z-10"
           aria-hidden="true"
@@ -49,38 +49,30 @@ function BarberCard({
             opacity: 0.6,
           }}
         />
-        {/* Placeholder silhouette */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <svg
-            width="120"
-            height="150"
-            viewBox="0 0 120 150"
-            fill="none"
-            aria-hidden="true"
-            opacity={0.08}
-          >
-            <ellipse cx="60" cy="45" rx="32" ry="36" fill="var(--foreground)" />
-            <path
-              d="M10 140c0-27.6 22.4-50 50-50s50 22.4 50 50"
-              fill="var(--foreground)"
-            />
-          </svg>
-        </div>
-        {/* Hover gold overlay */}
+
+        <Image
+          src={getBarberPortraitUrl(portraitKey, "card")}
+          alt={`${barber.name} — Hoosier Boy Barbershop`}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+          sizes="(max-width: 768px) 100vw, 38vw"
+          priority={index === 0}
+        />
+
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to top, rgba(212,175,55,0.08) 0%, transparent 50%)",
+              "linear-gradient(to top, rgba(212,175,55,0.12) 0%, transparent 55%)",
           }}
           aria-hidden="true"
         />
-        {/* Index label */}
+
         <span
-          className="absolute bottom-4 right-4 text-6xl font-black leading-none select-none"
+          className="absolute bottom-4 right-4 text-6xl font-black leading-none select-none z-10"
           style={{
             fontFamily: "var(--font-playfair)",
-            color: "rgba(212,175,55,0.08)",
+            color: "rgba(212,175,55,0.12)",
           }}
           aria-hidden="true"
         >
@@ -88,7 +80,6 @@ function BarberCard({
         </span>
       </div>
 
-      {/* Text content */}
       <div
         className="flex flex-col justify-center px-8 md:px-12 py-10 md:py-14 flex-1"
         style={{
@@ -99,7 +90,6 @@ function BarberCard({
           ...(isEven ? {} : { borderLeft: "1px solid var(--border)", borderRight: "none" }),
         }}
       >
-        {/* Overline */}
         <p
           className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-4"
           style={{ color: "var(--vintage-gold)" }}
@@ -107,7 +97,6 @@ function BarberCard({
           {barber.title}
         </p>
 
-        {/* Name with red accent */}
         <h3
           className="text-3xl md:text-4xl font-black leading-tight mb-5"
           style={{ fontFamily: "var(--font-playfair)" }}
@@ -120,10 +109,8 @@ function BarberCard({
           </span>
         </h3>
 
-        {/* Divider */}
         <span className="sera-divider mb-5" aria-hidden="true" />
 
-        {/* Bio */}
         <p
           className="text-sm leading-relaxed mb-6"
           style={{ color: "var(--muted-foreground)" }}
@@ -131,7 +118,6 @@ function BarberCard({
           {barber.bio}
         </p>
 
-        {/* Specialty tag */}
         <div
           className="flex items-center gap-2 text-xs mb-5"
           style={{ color: "var(--muted-foreground)" }}
@@ -144,13 +130,12 @@ function BarberCard({
           <span className="tracking-wide italic">{barber.specialty}</span>
         </div>
 
-        {/* Instagram link */}
         <a
           href={`https://instagram.com/${barber.instagram}`}
           target="_blank"
           rel="noopener noreferrer"
           data-cursor="View"
-          className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.12em] uppercase transition-colors duration-200 hover:text-[var(--vintage-gold)]"
+          className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.12em] uppercase transition-colors duration-200 hover:text-vintage-gold"
           style={{ color: "var(--muted-foreground)" }}
           aria-label={`Follow ${barber.name} on Instagram`}
         >
@@ -170,7 +155,6 @@ export default function Legends() {
       style={{ background: "var(--background)" }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section header */}
         <div className="mb-16">
           <p
             className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -198,7 +182,6 @@ export default function Legends() {
           <span className="sera-divider mt-6" aria-hidden="true" />
         </div>
 
-        {/* Barber cards */}
         <div className="flex flex-col gap-px" style={{ background: "var(--border)" }}>
           {BARBERS.map((barber, index) => (
             <BarberCard key={barber.id} barber={barber} index={index} />

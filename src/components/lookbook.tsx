@@ -4,53 +4,23 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-/** Cinematic image slide — replace src with Cloudinary URLs before launch */
-interface LookbookSlide {
+export interface LookbookSlide {
   id: string;
-  /** Cloudinary or CDN image URL */
+  /** Delivery URL (e.g. Cloudinary) */
   src: string;
   alt: string;
   caption: string;
   style: string;
 }
 
-const SLIDES: LookbookSlide[] = [
-  {
-    id: "slide-1",
-    src: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1200&q=80",
-    alt: "Classic taper fade — Hoosier Boy",
-    caption: "The Classic Taper",
-    style: "Clean Lines. Timeless Structure.",
-  },
-  {
-    id: "slide-2",
-    src: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=1200&q=80",
-    alt: "Hot towel straight-razor shave — Hoosier Boy",
-    caption: "The Straight Razor Ritual",
-    style: "Old-World Luxury. Zero Compromise.",
-  },
-  {
-    id: "slide-3",
-    src: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80",
-    alt: "Skin fade & beard sculpt — Hoosier Boy",
-    caption: "Skin Fade & Beard Sculpt",
-    style: "Architecture You Can Wear.",
-  },
-  {
-    id: "slide-4",
-    src: "https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=1200&q=80",
-    alt: "Textured crop & pomade finish — Hoosier Boy",
-    caption: "The Textured Crop",
-    style: "Modern. Deliberate. Refined.",
-  },
-];
+interface LookbookProps {
+  slides: LookbookSlide[];
+}
 
 /**
- * Lookbook — editorial 'centered-focus' Embla carousel.
- * Large cinematic images at 80vw that hint at adjacent slides.
- * Replace placeholder image URLs with Cloudinary transformations before launch.
+ * Editorial lookbook — centered-focus Embla carousel fed by Cloudinary `/results`.
  */
-export default function Lookbook() {
+export default function Lookbook({ slides }: LookbookProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -72,11 +42,14 @@ export default function Lookbook() {
     if (!emblaApi) return;
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
-    // onSelect will fire automatically when the API is ready via the event listeners above
   }, [emblaApi, onSelect]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  if (!slides.length) {
+    return null;
+  }
 
   return (
     <section
@@ -84,7 +57,6 @@ export default function Lookbook() {
       className="py-24 md:py-32 overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      {/* Section header */}
       <div className="px-6 max-w-7xl mx-auto mb-12">
         <p
           className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -109,10 +81,9 @@ export default function Lookbook() {
         <span className="sera-divider mt-6" aria-hidden="true" />
       </div>
 
-      {/* Embla viewport — slides at ~80vw with peek on sides */}
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex touch-pan-y select-none" style={{ gap: "1.5rem" }}>
-          {SLIDES.map((slide, index) => {
+          {slides.map((slide, index) => {
             const isActive = index === selectedIndex;
             return (
               <div
@@ -133,11 +104,10 @@ export default function Lookbook() {
                   src={slide.src}
                   alt={slide.alt}
                   className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
+                  loading={index === 0 ? "eager" : "lazy"}
                   draggable={false}
                 />
 
-                {/* Dark gradient vignette */}
                 <div
                   className="absolute inset-0"
                   style={{
@@ -147,7 +117,6 @@ export default function Lookbook() {
                   aria-hidden="true"
                 />
 
-                {/* Caption — only visible when active */}
                 <div
                   className="absolute bottom-0 left-0 right-0 px-8 py-8 transition-opacity duration-500"
                   style={{ opacity: isActive ? 1 : 0 }}
@@ -174,11 +143,9 @@ export default function Lookbook() {
         </div>
       </div>
 
-      {/* Controls */}
       <div className="px-6 max-w-7xl mx-auto mt-8 flex items-center justify-between">
-        {/* Dot indicators */}
         <div className="flex items-center gap-2" role="tablist" aria-label="Lookbook slides">
-          {SLIDES.map((slide, i) => (
+          {slides.map((slide, i) => (
             <button
               key={slide.id}
               role="tab"
@@ -196,7 +163,6 @@ export default function Lookbook() {
           ))}
         </div>
 
-        {/* Arrow buttons */}
         <div className="flex items-center gap-3">
           <button
             onClick={scrollPrev}

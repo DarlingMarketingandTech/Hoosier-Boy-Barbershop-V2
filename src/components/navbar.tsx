@@ -1,8 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import BookingDrawer from "./booking-drawer";
+import { getMasterLogoUrlNavbar } from "@/components/ui/media-assets";
+
+const NAV_LINKS = [
+  { label: "Services", href: "#services" },
+  { label: "Barbers", href: "#barbers" },
+  { label: "Lookbook", href: "#lookbook" },
+  { label: "About", href: "#story" },
+  { label: "Contact", href: "#contact" },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +24,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const logoSrc = getMasterLogoUrlNavbar();
+
   return (
     <>
       <header
@@ -21,40 +33,49 @@ export default function Navbar() {
           scrolled ? "py-3" : "py-5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          {/* Wordmark */}
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
           <Link
             href="/"
-            className="flex flex-col leading-none select-none"
+            className="flex items-center gap-3 select-none shrink-0"
             aria-label="Hoosier Boy Barbershop — Home"
           >
-            <span
-              className="text-lg font-black tracking-[0.12em] uppercase"
-              style={{
-                fontFamily: "var(--font-playfair)",
-                color: "var(--vintage-gold)",
-              }}
-            >
-              Hoosier Boy
-            </span>
-            <span
-              className="text-[9px] tracking-[0.28em] uppercase font-medium"
-              style={{ color: "var(--muted-foreground)" }}
-            >
-              Barbershop
+            <Image
+              src={logoSrc}
+              alt="Hoosier Boy Barbershop logo"
+              width={861}
+              height={902}
+              className="h-10 md:h-11 w-auto"
+              priority
+              sizes="120px"
+            />
+            <span className="hidden sm:flex flex-col leading-none">
+              <span
+                className="text-[11px] md:text-xs font-black tracking-[0.14em] uppercase"
+                style={{
+                  fontFamily: "var(--font-playfair)",
+                  color: "var(--vintage-gold)",
+                }}
+              >
+                Hoosier Boy
+              </span>
+              <span
+                className="text-[8px] tracking-[0.26em] uppercase font-medium"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                Barbershop
+              </span>
             </span>
           </Link>
 
-          {/* Nav Links */}
           <nav
-            className="hidden md:flex items-center gap-8"
+            className="hidden lg:flex items-center gap-7"
             aria-label="Primary navigation"
           >
-            {["Services", "Barbers", "About"].map((item) => (
+            {NAV_LINKS.map((item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-xs font-medium tracking-[0.15em] uppercase transition-colors"
+                key={item.href}
+                href={item.href}
+                className="text-[11px] font-medium tracking-[0.15em] uppercase transition-colors"
                 style={{ color: "var(--muted-foreground)" }}
                 onMouseOver={(e) =>
                   (e.currentTarget.style.color = "var(--foreground)")
@@ -63,16 +84,15 @@ export default function Navbar() {
                   (e.currentTarget.style.color = "var(--muted-foreground)")
                 }
               >
-                {item}
+                {item.label}
               </a>
             ))}
           </nav>
 
-          {/* Book Now CTA */}
           <button
             onClick={() => setDrawerOpen(true)}
             data-cursor="Book"
-            className="flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 shrink-0"
             style={{
               background: "var(--cardinal-red)",
               color: "#fff",

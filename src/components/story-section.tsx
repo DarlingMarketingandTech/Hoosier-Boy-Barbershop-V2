@@ -171,11 +171,11 @@ export default function StorySection() {
               opacity: 0.7,
             }}
           >
-            QTY: 1 SESSION // DURATION: 75 MIN // $65
+            MENU ANCHOR #SERVICES // CLASSIC CUT FROM $45 // NSHR LAB SEPARATE
           </p>
 
           <a
-            href="#book"
+            href="#services"
             data-cursor="Book"
             className="mt-2 self-start px-7 py-3 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
             style={{ background: "var(--cardinal-red)", color: "#fff" }}
@@ -188,7 +188,7 @@ export default function StorySection() {
               (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
             }}
           >
-            Book The Bear Repair
+            View The Menu
           </a>
         </motion.div>
       </div>

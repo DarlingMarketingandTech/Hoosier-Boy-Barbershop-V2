@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { SERVICES, SHOP_META } from "@/lib/constants";
+import { useEffect, useMemo, useRef } from "react";
+import {
+  NSHR_SERVICES,
+  SERVICES,
+  SHOP_META,
+  type Service,
+} from "@/lib/constants";
 
 interface BookingDrawerProps {
   open: boolean;
@@ -11,7 +16,19 @@ interface BookingDrawerProps {
 export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  /* Close on Escape key */
+  const drawerServices = useMemo((): Service[] => {
+    const nshrRows: Service[] = NSHR_SERVICES.map((n) => ({
+      id: n.id,
+      name: n.name,
+      description: n.description,
+      duration: n.durationMin,
+      category: "specialist",
+      quoteOnly: true,
+      price: n.priceUsd,
+    }));
+    return [...SERVICES, ...nshrRows];
+  }, []);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -26,7 +43,6 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
     };
   }, [open, onClose]);
 
-  /* Focus trap: move focus into drawer when opened */
   useEffect(() => {
     if (open) {
       drawerRef.current?.focus();
@@ -37,14 +53,12 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
 
   return (
     <>
-      {/* Overlay */}
       <div
         className="drawer-overlay"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Sheet panel */}
       <div
         ref={drawerRef}
         role="dialog"
@@ -54,7 +68,6 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
         className="fixed right-0 top-0 h-full w-full max-w-md z-50 flex flex-col outline-none"
         style={{ background: "var(--card)", borderLeft: "1px solid var(--border)" }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b"
           style={{ borderColor: "var(--border)" }}>
           <div>
@@ -80,9 +93,8 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
           </button>
         </div>
 
-        {/* Service list */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
-          {SERVICES.map((service) => (
+          {drawerServices.map((service) => (
             <div key={service.id} className="sera-card rounded-lg p-4 cursor-pointer group">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -106,7 +118,9 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
                   className="shrink-0 text-base font-bold tabular-nums"
                   style={{ color: "var(--vintage-gold)" }}
                 >
-                  ${service.price}
+                  {service.quoteOnly || service.price == null
+                    ? "Quote"
+                    : `$${service.price}`}
                 </span>
               </div>
               <button
@@ -123,7 +137,7 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
                 }
                 onClick={() =>
                   window.open(
-                    `${SHOP_META.bookingUrl}?service=${service.id}`,
+                    `${SHOP_META.bookingUrl}?service=${encodeURIComponent(service.id)}`,
                     "_self"
                   )
                 }
@@ -134,7 +148,6 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
           ))}
         </div>
 
-        {/* Footer */}
         <div
           className="px-6 py-4 border-t"
           style={{ borderColor: "var(--border)" }}

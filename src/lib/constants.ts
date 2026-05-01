@@ -3,10 +3,13 @@ export interface Barber {
   name: string;
   title: string;
   bio: string;
+  /** Legacy path segments — replaced by Cloudinary in UI */
   imagePlaceholder: string;
   specialty: string;
   /** Instagram handle without the @ symbol */
   instagram: string;
+  /** Menu items this barber anchors */
+  serviceIds: string[];
 }
 
 export interface Testimonial {
@@ -21,16 +24,16 @@ export interface ShopMeta {
   name: string;
   address: {
     street: string;
+    suite?: string;
     city: string;
     state: string;
     zip: string;
     country: string;
   };
   phone: string;
+  /** Human-readable hours blurb for footer / drawer */
   hours: {
     display: string;
-    /** ISO 8601 day-of-week open/close, e.g. "Mo-Fr 09:00-19:00" */
-    schema: string;
   };
   coordinates: {
     lat: number;
@@ -39,81 +42,156 @@ export interface ShopMeta {
   bookingUrl: string;
 }
 
+export type ServiceCategory = "cut" | "shave" | "treatment" | "specialist";
+
 export interface Service {
   id: string;
   name: string;
   description: string;
-  price: number;
-  duration: number; // minutes
-  category: "cut" | "shave" | "treatment";
+  /** Omit when quoting in-app only */
+  price?: number;
+  duration: number;
+  category: ServiceCategory;
+  /** Booking drawer shows quote flow instead of a dollar amount */
+  quoteOnly?: boolean;
 }
+
+export type WeekdayLong =
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+  | "Sunday";
+
+export type TimeShift = { open: string; close: string };
+
+/**
+ * Multi-shift weekly template — Tue–Sat mirrors the in-shop rhythm.
+ * Times are 24h HH:MM in {@link SHOP_TIMEZONE} (see hours.ts).
+ */
+export const WEEKLY_HOURS: Partial<Record<WeekdayLong, TimeShift[]>> = {
+  Tuesday: [
+    { open: "08:00", close: "11:00" },
+    { open: "11:30", close: "14:00" },
+  ],
+  Wednesday: [
+    { open: "08:00", close: "11:00" },
+    { open: "11:30", close: "14:00" },
+  ],
+  Thursday: [
+    { open: "08:00", close: "11:00" },
+    { open: "11:30", close: "14:00" },
+  ],
+  Friday: [
+    { open: "08:00", close: "11:00" },
+    { open: "11:30", close: "14:00" },
+  ],
+  Saturday: [
+    { open: "08:00", close: "11:00" },
+    { open: "11:30", close: "14:00" },
+  ],
+};
 
 export const BARBERS: Barber[] = [
   {
-    id: "marcus-wells",
-    name: "Marcus Wells",
-    title: "Master Barber & Founder",
-    bio: "With over 15 years behind the chair, Marcus brings old-school precision and modern artistry to every cut. Trained in Chicago's south side and certified in straight-razor technique, his work speaks for itself.",
-    imagePlaceholder: "/barbers/marcus-wells.jpg",
-    specialty: "Master of the Straight Razor",
-    instagram: "marcuswells.cuts",
+    id: "jimmy",
+    name: "Jimmy Griffin",
+    title: "Barber · Classic Specialist",
+    bio: "Jimmy delivers clean, structured classics with barbershop discipline — scissor-over-comb tailoring, crisp lines, and beard work that respects your growth pattern. If you want a cut that ages well and a beard that behaves, you’re in his chair.",
+    imagePlaceholder: "/barbers/jimmy.jpg",
+    specialty: "Classic Cut & Beard Architecture",
+    instagram: "hoosierboybarber",
+    serviceIds: ["classic-cut", "beard-trim-jimmy"],
   },
   {
-    id: "drew-callahan",
-    name: "Drew Callahan",
-    title: "Senior Barber",
-    bio: "Drew is the new blood with an old soul. Armed with a degree in cosmetology and a relentless passion for the craft, he specialises in textured cuts and beard sculpting that define a man's character.",
-    imagePlaceholder: "/barbers/drew-callahan.jpg",
-    specialty: "Architect of the Modern Fade",
-    instagram: "drewcallahan.barbershop",
+    id: "nate",
+    name: "Nate Shepherd",
+    title: "Specialist / Senior Barber",
+    bio: "Nate pairs senior-level fading and finishing with an educator’s eye for detail — precise transitions, honest consultations, and finishes that hold up in the real world. He also leads Hoosier Boy’s Non-Surgical Hair Replacement program with clinical-grade patience.",
+    imagePlaceholder: "/barbers/nate.jpg",
+    specialty: "Senior Fades · NSHR Lead",
+    instagram: "hoosierboybarber",
+    serviceIds: ["haircut-nate", "beard-trim-nate"],
   },
 ];
 
+/** Core haircut & beard menu */
 export const SERVICES: Service[] = [
-  {
-    id: "the-bear-repair",
-    name: "The Bear Repair",
-    description:
-      "Full-service transformation: precision haircut, hot-towel beard shaping, scalp massage, and a finishing pomade style. The complete Hoosier Boy experience.",
-    price: 65,
-    duration: 75,
-    category: "cut",
-  },
   {
     id: "classic-cut",
     name: "Classic Cut",
     description:
-      "A timeless scissor-over-comb cut tailored to your bone structure and lifestyle. Includes a hot-towel neck finish and premium styling product.",
-    price: 35,
+      "Tailored scissor-and-clipper balance with neck cleanup and styled finish — Jimmy’s signature discipline.",
+    price: 45,
     duration: 45,
     category: "cut",
   },
   {
-    id: "hot-towel-shave",
-    name: "Hot Towel Shave",
+    id: "beard-trim-jimmy",
+    name: "Beard Trim",
     description:
-      "The full ritual. Steamed hot towels, pre-shave oil, straight-razor precision, and a cold-water close. Old-world luxury for the modern gentleman.",
-    price: 40,
-    duration: 45,
+      "Shape, taper, and hot-towel polish so your beard reads intentional — not accidental.",
+    price: 45,
+    duration: 30,
     category: "shave",
   },
   {
-    id: "fade-and-lineup",
-    name: "Fade & Line-Up",
+    id: "haircut-nate",
+    name: "Haircut",
     description:
-      "Crisp skin-to-hair fade blended with surgical edge work. Your edges will be so clean they need their own zip code.",
-    price: 30,
-    duration: 35,
+      "Senior-grade consultation and precision finishing — skin-tight blends, refined tapering, executive polish.",
+    price: 50,
+    duration: 45,
     category: "cut",
   },
   {
-    id: "scalp-treatment",
-    name: "Scalp Ritual Treatment",
+    id: "beard-trim-nate",
+    name: "Beard Trim",
     description:
-      "A deep-cleanse scalp exfoliation followed by a nourishing oil massage. Promotes healthy hair growth and leaves you feeling grounded and refreshed.",
-    price: 25,
+      "Line restoration, cheek tapering, and blade-clean edges finished like equipment — not guesswork.",
+    price: 50,
     duration: 30,
-    category: "treatment",
+    category: "shave",
+  },
+];
+
+/** Nate · Non-Surgical Hair Replacement — numeric pricing supplied later */
+export interface NSHRService {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  durationMin: number;
+  /** Populate when pricing is finalized */
+  priceUsd?: number;
+}
+
+export const NSHR_SERVICES: NSHRService[] = [
+  {
+    id: "nshr-consult",
+    code: "NSHR-CONSULT",
+    name: "Consultation",
+    description:
+      "Private scalp assessment, density mapping, lifestyle fit, and a written plan before any installation work begins.",
+    durationMin: 30,
+  },
+  {
+    id: "nshr-install",
+    code: "NSHR-INSTALL",
+    name: "Installation",
+    description:
+      "Medical-grade adhesion + directional styling pass so the unit disappears into your existing profile.",
+    durationMin: 120,
+  },
+  {
+    id: "nshr-maintain",
+    code: "NSHR-MAINTAIN",
+    name: "Maintenance",
+    description:
+      "Re-bond edges, fiber refresh, and detailing so the system stays invisible week after week.",
+    durationMin: 60,
   },
 ];
 
@@ -123,52 +201,52 @@ export const SITE_CONFIG = {
   bookingUrl: "#book",
 };
 
-/** Structured shop metadata — used by JSON-LD, footer, and contact components */
+/** Structured shop metadata — footer, contact, JSON-LD */
 export const SHOP_META: ShopMeta = {
   name: "Hoosier Boy Barbershop",
   address: {
-    street: "1234 N Illinois St",
-    city: "Indianapolis",
+    street: "13901 Town Center Blvd",
+    suite: "Suite 500",
+    city: "Noblesville",
     state: "IN",
-    zip: "46204",
+    zip: "46060",
     country: "US",
   },
   phone: "(317) 555-0192",
   hours: {
-    display: "Tue–Sat: 9am – 7pm",
-    schema: "Tu-Sa 09:00-19:00",
+    display:
+      "Tue–Sat · 8:00 AM – 11:00 AM · 11:30 AM – 2:00 PM · Closed Sun–Mon",
   },
   coordinates: {
-    lat: 39.7684,
-    lng: -86.158,
+    lat: 40.04552,
+    lng: -86.01381,
   },
-  bookingUrl: "#book",
+  bookingUrl: "https://www.booksy.com/en-us/hoosierboybarber",
 };
 
-/** High-end testimonials sourced from Booksy reviews */
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "t1",
-    author: "Jordan M.",
+    author: "Marcus T.",
     quote:
-      "Marcus took one look at my face shape and delivered the sharpest taper I've ever walked out with. The hot-towel finish alone is worth the drive across town.",
+      "Jimmy lined me up with an old-school classic that still looks sharp two weeks later. The beard trim alone changed how my suits fit.",
     source: "Booksy",
     rating: 5,
   },
   {
     id: "t2",
-    author: "Caleb R.",
+    author: "Chris L.",
     quote:
-      "This isn't a barbershop — it's a ritual. Drew's beard sculpt was surgical. I've been to shops in NYC and Chicago; Hoosier Boy beats them all.",
+      "Nate’s fade work is surgical — zero bulk, perfect weight line. Most importantly he listens before he picks up the clippers.",
     source: "Booksy",
     rating: 5,
   },
   {
     id: "t3",
-    author: "Trevor S.",
+    author: "Jordan P.",
     quote:
-      "The Bear Repair is exactly what it promises: a full transformation. Walk in looking rough, walk out looking like you own the room. Five stars every single time.",
-    source: "Booksy",
+      "First shop in Noblesville where the vibe matches the skill. Hot towels, sharp lines, and zero chaos.",
+    source: "Google",
     rating: 5,
   },
 ];
