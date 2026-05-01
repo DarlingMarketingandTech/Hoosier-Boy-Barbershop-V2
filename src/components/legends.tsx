@@ -1,5 +1,26 @@
 import { BARBERS } from "@/lib/constants";
 
+/** Minimal Instagram brand icon (inline SVG) */
+function InstagramIcon({ size = 12 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 function BarberCard({
   barber,
   index,
@@ -112,7 +133,7 @@ function BarberCard({
 
         {/* Specialty tag */}
         <div
-          className="flex items-center gap-2 text-xs"
+          className="flex items-center gap-2 text-xs mb-5"
           style={{ color: "var(--muted-foreground)" }}
         >
           <span
@@ -122,6 +143,20 @@ function BarberCard({
           />
           <span className="tracking-wide italic">{barber.specialty}</span>
         </div>
+
+        {/* Instagram link */}
+        <a
+          href={`https://instagram.com/${barber.instagram}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="View"
+          className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.12em] uppercase transition-colors duration-200 hover:text-[var(--vintage-gold)]"
+          style={{ color: "var(--muted-foreground)" }}
+          aria-label={`Follow ${barber.name} on Instagram`}
+        >
+          <InstagramIcon size={12} />
+          @{barber.instagram}
+        </a>
       </div>
     </article>
   );

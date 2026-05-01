@@ -1,4 +1,4 @@
-import { SITE_CONFIG } from "@/lib/constants";
+import { SHOP_META } from "@/lib/constants";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -28,19 +28,21 @@ export default function Footer() {
         {/* Info */}
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-xs"
           style={{ color: "var(--muted-foreground)" }}>
-          <span>{SITE_CONFIG.address}</span>
+          <span>{SHOP_META.address.city}, {SHOP_META.address.state}</span>
           <span
             className="hidden md:block w-px h-3"
             style={{ background: "var(--border)" }}
             aria-hidden="true"
           />
-          <span>{SITE_CONFIG.phone}</span>
+          <a href={`tel:${SHOP_META.phone}`} className="hover:text-[var(--vintage-gold)] transition-colors">
+            {SHOP_META.phone}
+          </a>
           <span
             className="hidden md:block w-px h-3"
             style={{ background: "var(--border)" }}
             aria-hidden="true"
           />
-          <span>{SITE_CONFIG.hours}</span>
+          <span>{SHOP_META.hours.display}</span>
         </div>
 
         {/* Copyright */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, SHOP_META } from "@/lib/constants";
 
 import { type Variants } from "framer-motion";
 
@@ -25,6 +25,9 @@ const fadeIn: Variants = {
     transition: { duration: 1, ease: "easeOut" as const, delay },
   }),
 };
+
+/** Mock next-available opening derived from shop hours */
+const NEXT_OPENING = "Today · 9:00 AM";
 
 export default function Hero() {
   return (
@@ -54,6 +57,31 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        {/* Live status badge */}
+        <motion.div
+          variants={fadeIn}
+          initial="hidden"
+          animate="visible"
+          custom={0.1}
+          className="flex items-center justify-center gap-2 mb-6"
+        >
+          <span
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.2em] uppercase"
+            style={{
+              background: "rgba(212,175,55,0.08)",
+              border: "1px solid rgba(212,175,55,0.2)",
+              color: "var(--vintage-gold)",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: "var(--vintage-gold)" }}
+              aria-hidden="true"
+            />
+            Next Opening: {NEXT_OPENING}
+          </span>
+        </motion.div>
+
         {/* Overline label */}
         <motion.p
           variants={fadeIn}
@@ -63,7 +91,7 @@ export default function Hero() {
           className="text-xs font-semibold tracking-[0.35em] uppercase mb-8"
           style={{ color: "var(--vintage-gold)" }}
         >
-          Indianapolis, Indiana · Est. 2018
+          {SHOP_META.address.city}, {SHOP_META.address.state} · Est. 2018
         </motion.p>
 
         {/* Main heading */}
@@ -126,6 +154,7 @@ export default function Hero() {
         >
           <a
             href="#services"
+            data-cursor="View"
             className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200"
             style={{ background: "var(--cardinal-red)", color: "#fff" }}
             onMouseOver={(e) => {
@@ -141,6 +170,7 @@ export default function Hero() {
           </a>
           <a
             href="#barbers"
+            data-cursor="View"
             className="px-8 py-3.5 text-sm font-medium tracking-[0.12em] uppercase rounded border transition-all duration-200"
             style={{
               borderColor: "var(--border)",

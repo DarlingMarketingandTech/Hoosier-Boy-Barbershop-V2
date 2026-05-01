@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { SERVICES, SITE_CONFIG } from "@/lib/constants";
+import { SERVICES, SHOP_META } from "@/lib/constants";
 
 interface BookingDrawerProps {
   open: boolean;
@@ -123,7 +123,7 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
                 }
                 onClick={() =>
                   window.open(
-                    `${SITE_CONFIG.bookingUrl}?service=${service.id}`,
+                    `${SHOP_META.bookingUrl}?service=${service.id}`,
                     "_self"
                   )
                 }
@@ -140,7 +140,7 @@ export default function BookingDrawer({ open, onClose }: BookingDrawerProps) {
           style={{ borderColor: "var(--border)" }}
         >
           <p className="text-xs text-center" style={{ color: "var(--muted-foreground)" }}>
-            {SITE_CONFIG.hours} · {SITE_CONFIG.phone}
+            {SHOP_META.hours.display} · {SHOP_META.phone}
           </p>
         </div>
       </div>

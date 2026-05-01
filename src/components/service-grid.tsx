@@ -59,7 +59,7 @@ export default function ServiceGrid() {
           {SERVICES.map((service) => (
             <article
               key={service.id}
-              className="sera-card group p-7 flex flex-col justify-between min-h-[220px]"
+              className="sera-card group p-7 flex flex-col justify-between min-h-[240px]"
               style={{ border: "none" }}
             >
               <div>
@@ -88,18 +88,24 @@ export default function ServiceGrid() {
                   {service.description}
                 </p>
               </div>
+
+              {/* Technical data row — monospace 'barber spec' aesthetic */}
               <div
                 className="flex items-center justify-between mt-6 pt-4"
                 style={{ borderTop: "1px solid var(--border)" }}
               >
                 <span
-                  className="text-xs tracking-wide"
-                  style={{ color: "var(--muted-foreground)" }}
+                  className="text-[10px] tracking-widest uppercase"
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--muted-foreground)",
+                  }}
                 >
-                  {service.duration} min
+                  QTY: 1 {service.category.toUpperCase()} · ${service.price}
                 </span>
                 <span
-                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-[var(--vintage-gold)]"
+                  data-cursor="Book"
+                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-[var(--vintage-gold)] cursor-pointer"
                   style={{ color: "var(--muted-foreground)" }}
                 >
                   Book →
