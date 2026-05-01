@@ -70,11 +70,9 @@ export default function Lookbook() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    // Sync state when API is ready via event listeners only
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
-    // Sync the very first snapshot through the event callback path
-    emblaApi.emit("select");
+    // onSelect will fire automatically when the API is ready via the event listeners above
   }, [emblaApi, onSelect]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);

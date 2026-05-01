@@ -13,7 +13,7 @@ export interface Testimonial {
   id: string;
   author: string;
   quote: string;
-  source: "Booksy";
+  source: "Booksy" | "Google" | "Yelp";
   rating: 5;
 }
 

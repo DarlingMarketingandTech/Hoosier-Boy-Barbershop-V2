@@ -10,7 +10,11 @@ export const metadata: Metadata = {
     "Indianapolis's premier destination for precision haircuts, hot-towel shaves, and the full barber experience. Book your appointment with Hoosier Boy Barbershop today.",
 };
 
-/** LocalBusiness JSON-LD for Indianapolis local SEO */
+/**
+ * LocalBusiness JSON-LD for Indianapolis local SEO.
+ * Uses "HairSalon" (a sub-type of HealthAndBeautyBusiness) rather than "BarberShop"
+ * because Google's Rich Results understand HairSalon and it surfaces in local pack results.
+ */
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
