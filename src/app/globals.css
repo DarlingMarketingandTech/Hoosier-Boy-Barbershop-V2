@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* ── Self-hosted Fonts ───────────────────────────────────────── */
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GeistMono";
+  src: url("/fonts/geist-mono-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("/fonts/PlayfairDisplay-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("/fonts/PlayfairDisplay-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("/fonts/PlayfairDisplay-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Brand Tokens ────────────────────────────────────────────── */
+:root {
+  --background: #0a0a0a;
+  --foreground: #f0ece4;
+  --card: #141414;
+  --card-foreground: #f0ece4;
+  --border: #222222;
+  --muted: #2a2a2a;
+  --muted-foreground: #888888;
+
+  /* Brand Accents */
+  --cardinal-red: #e34234;
+  --vintage-gold: #d4af37;
+  --cardinal-red-hover: #c93628;
+  --vintage-gold-hover: #b8972e;
+
+  /* Font Families */
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-serif: "PlayfairDisplay", Georgia, serif;
+  --font-playfair: "PlayfairDisplay", Georgia, serif;
+  --font-mono: "GeistMono", monospace;
+}
+
+/* ── Tailwind v4 Theme Extension ─────────────────────────────── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-cardinal-red: var(--cardinal-red);
+  --color-vintage-gold: var(--vintage-gold);
+  --color-cardinal-red-hover: var(--cardinal-red-hover);
+  --color-vintage-gold-hover: var(--vintage-gold-hover);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+}
+
+/* ── Base Styles ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
+
+/* ── Sera Preset: Sophisticated spacing & borders ─────────────── */
+.sera-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sera-card:hover {
+  border-color: var(--vintage-gold);
+  box-shadow: 0 0 0 1px var(--vintage-gold), 0 8px 32px rgba(212, 175, 55, 0.08);
+}
+
+.sera-divider {
+  width: 2.5rem;
+  height: 2px;
+  background: var(--vintage-gold);
+  display: block;
+}
+
+.sera-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--vintage-gold);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+/* Glassmorphism helper */
+.glass {
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Booking drawer overlay */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 49;
+  backdrop-filter: blur(4px);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
