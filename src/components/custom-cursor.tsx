@@ -13,11 +13,8 @@ export default function CustomCursor() {
   const [label, setLabel] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Lazy initializer — runs once on mount, safe from SSR
-  const [isVisible] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(pointer: fine)").matches;
-  });
+  /** Must stay false until after mount so SSR + first client paint match (avoids hydration mismatch). */
+  const [showCursor, setShowCursor] = useState(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -47,12 +44,14 @@ export default function CustomCursor() {
   );
 
   useEffect(() => {
-    if (!isVisible) return;
+    const mq = window.matchMedia("(pointer: fine)");
+    if (!mq.matches) return;
+    setShowCursor(true);
     window.addEventListener("mousemove", onMouseMove);
     return () => window.removeEventListener("mousemove", onMouseMove);
-  }, [onMouseMove, isVisible]);
+  }, [onMouseMove]);
 
-  if (!isVisible) return null;
+  if (!showCursor) return null;
 
   return (
     <motion.div

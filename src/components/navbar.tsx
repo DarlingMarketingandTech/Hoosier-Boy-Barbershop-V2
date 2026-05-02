@@ -3,20 +3,23 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import BookingDrawer from "./booking-drawer";
+import { useBooking } from "@/components/booking-context";
+import MagneticWrap from "@/components/magnetic-wrap";
 import { getMasterLogoUrlNavbar } from "@/components/ui/media-assets";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
+  { label: "Partners", href: "#brand-partners" },
   { label: "Barbers", href: "#barbers" },
   { label: "Lookbook", href: "#lookbook" },
+  { label: "Reviews", href: "#testimonials" },
   { label: "About", href: "#story" },
   { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { openDrawer } = useBooking();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -89,37 +92,34 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <button
-            onClick={() => setDrawerOpen(true)}
-            data-cursor="Book"
-            className="flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 shrink-0"
-            style={{
-              background: "var(--cardinal-red)",
-              color: "#fff",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.background = "var(--cardinal-red-hover)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.background = "var(--cardinal-red)";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-            aria-label="Open booking drawer"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <rect x="1" y="2" width="10" height="9" rx="1" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-            Book Now
-          </button>
+          <MagneticWrap className="shrink-0">
+            <button
+              type="button"
+              onClick={() => openDrawer(null)}
+              data-cursor="Book"
+              className="flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{
+                background: "var(--cardinal-red)",
+                color: "#fff",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "var(--cardinal-red-hover)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "var(--cardinal-red)";
+              }}
+              aria-label="Open booking drawer"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <rect x="1" y="2" width="10" height="9" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+              Book Now
+            </button>
+          </MagneticWrap>
         </div>
       </header>
 
-      <BookingDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      />
     </>
   );
 }

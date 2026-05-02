@@ -1,4 +1,9 @@
+"use client";
+
+import Image from "next/image";
+import { useBooking } from "@/components/booking-context";
 import { SERVICES, type ServiceCategory } from "@/lib/constants";
+import { DESIGN_BG } from "@/lib/design-assets";
 
 function CategoryBadge({ category }: { category: ServiceCategory }) {
   const labels: Record<ServiceCategory, string> = {
@@ -34,13 +39,39 @@ function CategoryBadge({ category }: { category: ServiceCategory }) {
 }
 
 export default function ServiceGrid() {
+  const { openDrawer } = useBooking();
   return (
     <section
       id="services"
-      className="py-24 md:py-32 px-6"
+      className="relative overflow-hidden py-24 md:py-32 px-6"
       style={{ background: "var(--background)" }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={DESIGN_BG.servicesBench}
+          alt=""
+          fill
+          quality={82}
+          sizes="100vw"
+          className="object-cover object-[40%_55%] opacity-80"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(8,8,8,0.88) 0%, rgba(8,8,8,0.92) 50%, rgba(8,8,8,0.94) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 55%)",
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         <div className="mb-14">
           <p
             className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -114,13 +145,19 @@ export default function ServiceGrid() {
                   QTY: 1 {service.category.toUpperCase()}
                   {service.price != null ? ` · $${service.price}` : ""}
                 </span>
-                <span
+                <button
+                  type="button"
                   data-cursor="Book"
-                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-vintage-gold cursor-pointer"
+                  disabled={!service.booksyServiceId}
+                  onClick={() =>
+                    service.booksyServiceId &&
+                    openDrawer(service.booksyServiceId)
+                  }
+                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-vintage-gold disabled:opacity-40"
                   style={{ color: "var(--muted-foreground)" }}
                 >
                   Book →
-                </span>
+                </button>
               </div>
             </article>
           ))}

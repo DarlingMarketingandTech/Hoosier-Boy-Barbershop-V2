@@ -3,8 +3,12 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import LiveStatusBadge from "@/components/live-status-badge";
+import { useBooking } from "@/components/booking-context";
+import MagneticWrap from "@/components/magnetic-wrap";
 import { SITE_CONFIG, SHOP_META } from "@/lib/constants";
 import { formatHeroHoursBadge } from "@/lib/hours";
+import { DESIGN_BG } from "@/lib/design-assets";
 import { getMasterLogoUrlHero } from "@/components/ui/media-assets";
 
 import { type Variants } from "framer-motion";
@@ -31,6 +35,7 @@ const fadeIn: Variants = {
 };
 
 export default function Hero() {
+  const { openDrawer } = useBooking();
   const logoSrc = getMasterLogoUrlHero();
   const [hoursBadge, setHoursBadge] = useState(() =>
     formatHeroHoursBadge(new Date())
@@ -45,15 +50,42 @@ export default function Hero() {
 
   return (
     <section
+      id="home"
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ background: "var(--background)" }}
     >
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={DESIGN_BG.heroWorkstation}
+          alt=""
+          fill
+          priority
+          quality={88}
+          sizes="100vw"
+          className="object-cover object-[58%_42%] scale-105 sm:scale-100"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(8,8,8,0.72) 0%, rgba(8,8,8,0.82) 42%, rgba(8,8,8,0.9) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 85% 65% at 50% 38%, rgba(8,8,8,0.15) 0%, rgba(8,8,8,0.55) 100%)",
+          }}
+        />
+      </div>
+
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden="true"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 50% 55%, rgba(227,66,52,0.06) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 60% at 50% 55%, rgba(227,66,52,0.07) 0%, transparent 70%)",
         }}
       />
 
@@ -61,7 +93,7 @@ export default function Hero() {
         initial={{ scaleX: 0, opacity: 0 }}
         animate={{ scaleX: 1, opacity: 1 }}
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        className="absolute top-[30%] left-0 right-0 h-px origin-left"
+        className="absolute top-[30%] left-0 right-0 z-[1] h-px origin-left"
         style={{ background: "linear-gradient(to right, transparent, var(--border), transparent)" }}
         aria-hidden="true"
       />
@@ -90,8 +122,9 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           custom={0.1}
-          className="flex items-center justify-center gap-2 mb-6"
+          className="flex flex-wrap items-center justify-center gap-3 mb-6"
         >
+          <LiveStatusBadge />
           <span
             className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-[0.2em] uppercase"
             style={{
@@ -174,18 +207,38 @@ export default function Hero() {
           custom={0.85}
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
+          <MagneticWrap>
+            <button
+              type="button"
+              onClick={() => openDrawer(null)}
+              data-cursor="Book"
+              className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200"
+              style={{ background: "var(--cardinal-red)", color: "#fff" }}
+              onMouseOver={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "var(--cardinal-red-hover)";
+              }}
+              onMouseOut={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "var(--cardinal-red)";
+              }}
+            >
+              Book Now
+            </button>
+          </MagneticWrap>
           <a
             href="#services"
             data-cursor="View"
-            className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200"
-            style={{ background: "var(--cardinal-red)", color: "#fff" }}
+            className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200 border"
+            style={{
+              borderColor: "var(--border)",
+              color: "var(--foreground)",
+            }}
             onMouseOver={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "var(--cardinal-red-hover)";
-              (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--vintage-gold)";
+              (e.currentTarget as HTMLElement).style.color = "var(--vintage-gold)";
             }}
             onMouseOut={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "var(--cardinal-red)";
-              (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+              (e.currentTarget as HTMLElement).style.color = "var(--foreground)";
             }}
           >
             View Services
@@ -216,7 +269,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4, duration: 0.8, repeat: Infinity, repeatType: "mirror" }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2"
         aria-hidden="true"
       >
         <span

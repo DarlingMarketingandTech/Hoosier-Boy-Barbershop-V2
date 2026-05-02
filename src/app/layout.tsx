@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { SERVICES, SHOP_META } from "@/lib/constants";
+import { INSTAGRAM_PROFILE_URL, SERVICES, SHOP_META } from "@/lib/constants";
 import { buildOpeningHoursSpecification } from "@/lib/json-ld";
-import { getMasterLogoUrlSchema } from "@/components/ui/media-assets";
+import { getSiteLogoAbsoluteUrl, SITE_LOGO_PATH } from "@/components/ui/media-assets";
+import BookingDrawer from "@/components/booking-drawer";
+import { BookingProvider } from "@/components/booking-context";
 import CustomCursor from "@/components/custom-cursor";
 import PageTransition from "@/components/page-transition";
+import MobileBottomNav from "@/components/mobile-bottom-nav";
+import PwaInstallBanner from "@/components/pwa-install-banner";
+import PwaServiceWorkerRegister from "@/components/pwa-service-worker-register";
+import { BOOKSY_PROFILE_URL } from "@/lib/booksy";
 
 const siteUrl = "https://hoosierboybarber.com";
 
@@ -15,11 +21,28 @@ const streetAddress = [
   .filter(Boolean)
   .join(", ");
 
+const ogLogoUrl = SITE_LOGO_PATH;
+const faviconUrl = SITE_LOGO_PATH;
+const appleTouchUrl = SITE_LOGO_PATH;
+
+export const viewport: Viewport = {
+  themeColor: "#080808",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Hoosier Boy Barbershop — Noblesville, IN",
   description:
-    "Hoosier Boy Barbershop in Noblesville delivers precision haircuts, beard trims, and Nate Shepherd's Non-Surgical Hair Replacement program. Book your chair online.",
+    "Hoosier Boy Barbershop in Noblesville delivers precision haircuts, beard trims, and Nate Gouty's Non-Surgical Hair Replacement program. Book your chair online.",
+  icons: {
+    icon: [{ url: faviconUrl, type: "image/png" }],
+    apple: [
+      { url: appleTouchUrl, sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: "Hoosier Boy Barbershop — Noblesville, IN",
     description:
@@ -28,6 +51,28 @@ export const metadata: Metadata = {
     siteName: SHOP_META.name,
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: ogLogoUrl,
+        width: 861,
+        height: 902,
+        type: "image/png",
+        alt: `${SHOP_META.name} logo`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hoosier Boy Barbershop — Noblesville, IN",
+    description:
+      "Precision cuts, beard architecture, and specialist NSHR consultations — Hoosier Boy Barbershop at Town Center Blvd.",
+    images: [ogLogoUrl],
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Hoosier Boy",
   },
 };
 
@@ -35,11 +80,12 @@ const haircutPrices = SERVICES.filter((s) => s.price != null).map((s) => s.price
 const minPrice = Math.min(...haircutPrices);
 const maxPrice = Math.max(...haircutPrices);
 
-const schemaLogoUrl = getMasterLogoUrlSchema();
+const schemaLogoUrl = getSiteLogoAbsoluteUrl(siteUrl);
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "HairSalon",
+  "@type": "LocalBusiness",
+  "additionalType": "https://schema.org/HairSalon",
   "@id": `${siteUrl}/#barbershop`,
   name: SHOP_META.name,
   url: siteUrl,
@@ -49,6 +95,7 @@ const jsonLd = {
     url: schemaLogoUrl,
   },
   telephone: SHOP_META.phone,
+  email: SHOP_META.email,
   priceRange: `$${minPrice}–$${maxPrice}`,
   address: {
     "@type": "PostalAddress",
@@ -72,10 +119,7 @@ const jsonLd = {
     },
   },
   openingHoursSpecification: buildOpeningHoursSpecification(),
-  sameAs: [
-    SHOP_META.bookingUrl,
-    "https://www.instagram.com/hoosierboybarber",
-  ],
+  sameAs: [BOOKSY_PROFILE_URL, INSTAGRAM_PROFILE_URL],
 };
 
 export default function RootLayout({
@@ -91,11 +135,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-[#f0ece4]">
-        <CustomCursor />
-        <PageTransition>
-          {children}
-        </PageTransition>
+      <body className="min-h-full flex flex-col bg-[#080808] text-[#f0ece4] film-grain">
+        <BookingProvider>
+          <CustomCursor />
+          <PageTransition>{children}</PageTransition>
+          <BookingDrawer />
+          <PwaServiceWorkerRegister />
+          <PwaInstallBanner />
+          <MobileBottomNav />
+        </BookingProvider>
       </body>
     </html>
   );

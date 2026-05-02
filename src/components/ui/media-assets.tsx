@@ -1,14 +1,15 @@
 /**
- * Cloudinary delivery URLs + canonical public IDs for Hoosier Boy media.
- * Paths mirror Cloudinary asset folders under `hoosier-boy-barbershop/*`.
+ * Site logo path + Cloudinary delivery URLs for barbers, lookbook, etc.
+ * Cloudinary paths mirror folders under `hoosier-boy-barbershop/*`.
  * Safe to import from Client Components (uses NEXT_PUBLIC cloud name only).
  */
+
+/** Primary logo — `public/images/logo/IMG_1673_1.png` (861×902). */
+export const SITE_LOGO_PATH = "/images/logo/IMG_1673_1.png";
 
 export const CLOUDINARY_ASSET_ROOT = "hoosier-boy-barbershop";
 
 export const MEDIA_PUBLIC_IDS = {
-  /** Single logo asset in folder — highest-res master (861×902 PNG). */
-  logoMaster: "IMG_1673_1",
   jimmyPortrait: "jimmy-bio",
   /** Primary Nate portrait — 4000×3000. */
   natePortrait: "20230518_134718",
@@ -39,33 +40,47 @@ function getCloudName(): string {
 
 /** Build an optimized `https://res.cloudinary.com/.../upload/...` URL. */
 export function cloudinaryImageUrl(
-  publicId: string,
-  options: CloudinaryTransformOptions = {}
+  publicId: string | undefined | null,
+  options?: CloudinaryTransformOptions | null
 ): string {
+  if (typeof publicId !== "string" || !publicId.trim()) {
+    throw new Error(
+      "cloudinaryImageUrl: missing publicId. The site logo lives at SITE_LOGO_PATH — do not pass it through Cloudinary."
+    );
+  }
+  const opts = options ?? {};
   const cloud = getCloudName();
   const baseTransforms = ["f_auto", "q_auto:best"];
-  const merged = [...baseTransforms, ...(options.transforms ?? [])];
+  const merged = [...baseTransforms, ...(opts.transforms ?? [])];
   const transformation = merged.filter(Boolean).join(",");
   const encodedId = publicId.split("/").map(encodeURIComponent).join("/");
   return `https://res.cloudinary.com/${cloud}/image/upload/${transformation}/${encodedId}`;
 }
 
+/** Absolute logo URL for JSON-LD and anywhere a full URL is required. */
+export function getSiteLogoAbsoluteUrl(siteOrigin: string): string {
+  const base = siteOrigin.replace(/\/$/, "");
+  return `${base}${SITE_LOGO_PATH}`;
+}
+
 export function getMasterLogoUrlNavbar(): string {
-  return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.logoMaster, {
-    transforms: ["h_44", "c_limit", "dpr_auto", "fl_png"],
-  });
+  return SITE_LOGO_PATH;
 }
 
 export function getMasterLogoUrlHero(): string {
-  return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.logoMaster, {
-    transforms: ["w_720", "c_limit", "dpr_auto", "fl_png"],
-  });
+  return SITE_LOGO_PATH;
 }
 
 export function getMasterLogoUrlSchema(): string {
-  return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.logoMaster, {
-    transforms: ["w_1200", "c_limit", "dpr_auto", "fl_png"],
-  });
+  return SITE_LOGO_PATH;
+}
+
+export function getMasterLogoUrlFavicon(): string {
+  return SITE_LOGO_PATH;
+}
+
+export function getMasterLogoUrlAppleTouch(): string {
+  return SITE_LOGO_PATH;
 }
 
 export function getBarberPortraitUrl(

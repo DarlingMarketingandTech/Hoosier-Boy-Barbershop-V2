@@ -1,4 +1,7 @@
+import ContactBookCta from "@/components/contact-book-cta";
+import Image from "next/image";
 import Link from "next/link";
+import { DESIGN_BG } from "@/lib/design-assets";
 import {
   Accessibility,
   Baby,
@@ -55,13 +58,38 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="py-24 md:py-32 px-6 border-t"
+      className="relative overflow-hidden border-t py-24 md:py-32 px-6"
       style={{
-        background: "var(--card)",
+        background: "var(--background)",
         borderColor: "var(--border)",
       }}
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={DESIGN_BG.contactEntry}
+          alt=""
+          fill
+          quality={85}
+          sizes="100vw"
+          className="object-cover object-[45%_center]"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(8,8,8,0.94) 0%, rgba(8,8,8,0.88) 45%, rgba(8,8,8,0.82) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 80% at 20% 50%, rgba(8,8,8,0.35) 0%, transparent 60%)",
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-start gap-14 lg:grid-cols-2 lg:gap-20">
         <div>
           <p
             className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -76,9 +104,9 @@ export default function ContactSection() {
               color: "var(--foreground)",
             }}
           >
-            Hoosier Boy
+            Contact
             <br />
-            <span style={{ color: "var(--cardinal-red)" }}>Headquarters</span>
+            <span style={{ color: "var(--cardinal-red)" }}>Us</span>
           </h2>
           <span className="sera-divider mb-8" aria-hidden="true" />
 
@@ -113,21 +141,38 @@ export default function ContactSection() {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-3 text-sm">
-            <a
-              href={`tel:${SHOP_META.phone.replace(/\D/g, "")}`}
-              className="font-medium hover:text-vintage-gold transition-colors"
-              style={{ color: "var(--foreground)" }}
-            >
-              {SHOP_META.phone}
-            </a>
-            <Link
-              href={SHOP_META.bookingUrl}
-              className="inline-flex w-fit px-6 py-3 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
-              style={{ background: "var(--cardinal-red)", color: "#fff" }}
-            >
-              Book on Booksy
-            </Link>
+          <div className="flex flex-col gap-4 text-sm">
+            <div>
+              <p
+                className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em]"
+                style={{ color: "var(--vintage-gold)" }}
+              >
+                Call us
+              </p>
+              <a
+                href={`tel:${SHOP_META.phone.replace(/\D/g, "")}`}
+                className="font-medium hover:text-vintage-gold transition-colors"
+                style={{ color: "var(--foreground)" }}
+              >
+                {SHOP_META.phone}
+              </a>
+            </div>
+            <div>
+              <p
+                className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em]"
+                style={{ color: "var(--vintage-gold)" }}
+              >
+                Email
+              </p>
+              <a
+                href={`mailto:${SHOP_META.email}`}
+                className="font-medium break-all hover:text-vintage-gold transition-colors"
+                style={{ color: "var(--foreground)" }}
+              >
+                {SHOP_META.email}
+              </a>
+            </div>
+            <ContactBookCta />
           </div>
         </div>
 

@@ -1,6 +1,9 @@
-import { SHOP_META } from "@/lib/constants";
+import Image from "next/image";
+import { INSTAGRAM_PROFILE_URL, SHOP_META } from "@/lib/constants";
+import { getMasterLogoUrlNavbar } from "@/components/ui/media-assets";
 
 export default function Footer() {
+  const logoSrc = getMasterLogoUrlNavbar();
   const year = new Date().getFullYear();
 
   const addressLine = [
@@ -14,19 +17,29 @@ export default function Footer() {
       style={{ background: "var(--card)", borderColor: "var(--border)" }}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col items-center md:items-start leading-none">
-          <span
-            className="text-base font-black tracking-[0.12em] uppercase"
-            style={{ fontFamily: "var(--font-playfair)", color: "var(--vintage-gold)" }}
-          >
-            Hoosier Boy
-          </span>
-          <span
-            className="text-[9px] tracking-[0.28em] uppercase mt-0.5"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            Barbershop
-          </span>
+        <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 sm:gap-4 leading-none">
+          <Image
+            src={logoSrc}
+            alt="Hoosier Boy Barbershop logo"
+            width={861}
+            height={902}
+            className="h-9 w-auto opacity-90"
+            sizes="80px"
+          />
+          <div className="flex flex-col items-center md:items-start">
+            <span
+              className="text-base font-black tracking-[0.12em] uppercase"
+              style={{ fontFamily: "var(--font-playfair)", color: "var(--vintage-gold)" }}
+            >
+              Hoosier Boy
+            </span>
+            <span
+              className="text-[9px] tracking-[0.28em] uppercase mt-0.5"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Barbershop
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-xs text-center md:text-left"
@@ -53,7 +66,31 @@ export default function Footer() {
             style={{ background: "var(--border)" }}
             aria-hidden="true"
           />
+          <a
+            href={`mailto:${SHOP_META.email}`}
+            className="hover:text-vintage-gold transition-colors break-all max-w-[200px] md:max-w-none"
+          >
+            {SHOP_META.email}
+          </a>
+          <span
+            className="hidden md:block w-px h-3"
+            style={{ background: "var(--border)" }}
+            aria-hidden="true"
+          />
           <span>{SHOP_META.hours.display}</span>
+          <span
+            className="hidden md:block w-px h-3"
+            style={{ background: "var(--border)" }}
+            aria-hidden="true"
+          />
+          <a
+            href={INSTAGRAM_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-vintage-gold transition-colors"
+          >
+            Instagram
+          </a>
         </div>
 
         <p className="text-[10px] tracking-wide" style={{ color: "var(--muted-foreground)" }}>

@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { DESIGN_BG } from "@/lib/design-assets";
 
 /**
  * StorySection — "The Bear Repair" scrollytelling narrative.
@@ -22,17 +24,35 @@ export default function StorySection() {
       className="relative overflow-hidden py-32 md:py-48 px-6"
       style={{ background: "var(--background)" }}
     >
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={DESIGN_BG.storyLogoGlass}
+          alt=""
+          fill
+          quality={82}
+          sizes="100vw"
+          className="object-cover object-[72%_center] opacity-90"
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(115deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.88) 48%, rgba(8,8,8,0.78) 100%)",
+          }}
+        />
+      </div>
+
       {/* Subtle gold gradient bleed */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden="true"
         style={{
           background:
-            "radial-gradient(ellipse 60% 55% at 50% 50%, rgba(212,175,55,0.04) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 55% at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 70%)",
         }}
       />
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
         {/* ── Cardinal Logo Silhouette (left) ── */}
         <motion.div
           ref={logoRef}
@@ -131,6 +151,16 @@ export default function StorySection() {
           </h2>
 
           <span className="sera-divider" aria-hidden="true" />
+
+          <p
+            className="text-base leading-relaxed"
+            style={{ color: "var(--muted-foreground)", maxWidth: "42ch" }}
+          >
+            Our story begins in 2022 when two friends, Jimmy Bissonette and Nathan
+            Gouty, had a vision of creating a barbershop that not only offers
+            top-quality grooming services but also fosters a sense of community among
+            its customers.
+          </p>
 
           <p
             className="text-base leading-relaxed"

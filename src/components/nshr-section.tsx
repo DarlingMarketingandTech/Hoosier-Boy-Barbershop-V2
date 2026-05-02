@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { NSHR_SERVICES, SHOP_META } from "@/lib/constants";
+import { NSHR_SERVICES } from "@/lib/constants";
+import { getBooksyServiceBookingUrl } from "@/lib/booksy";
 
 export default function NshrSection() {
   return (
@@ -17,6 +18,19 @@ export default function NshrSection() {
             linear-gradient(90deg, rgba(212,175,55,0.35) 1px, transparent 1px)
           `,
           backgroundSize: "28px 28px",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `repeating-linear-gradient(
+            -18deg,
+            transparent,
+            transparent 11px,
+            rgba(212,175,55,0.06) 11px,
+            rgba(212,175,55,0.06) 12px
+          )`,
         }}
       />
 
@@ -45,7 +59,7 @@ export default function NshrSection() {
                 className="text-sm md:text-base leading-relaxed"
                 style={{ color: "var(--muted-foreground)" }}
               >
-                Nate Shepherd leads Hoosier Boy&apos;s NSHR program — measured installs,
+                Nate Gouty leads Hoosier Boy&apos;s NSHR program — measured installs,
                 breathable adhesives, and maintenance rhythm built like equipment service,
                 not guesswork. Consult first. Install once the map is right.
               </p>
@@ -63,6 +77,16 @@ export default function NshrSection() {
           </div>
           <span className="sera-divider mt-8" aria-hidden="true" />
         </div>
+
+        <ul
+          className="mb-10 grid gap-2 text-[11px] leading-relaxed md:grid-cols-2"
+          style={{ fontFamily: "var(--font-mono)", color: "var(--muted-foreground)" }}
+        >
+          <li>SPEC · LAB-GRADE ADHESION · BREATHABLE BASE MAP</li>
+          <li>SPEC · DENSITY MATCH · DIRECTIONAL FIBER LAY</li>
+          <li>SPEC · REBOND CADENCE · EDGE INVISIBILITY CHECK</li>
+          <li>SPEC · PRIVATE SUITE · CONSULT-FIRST PROTOCOL</li>
+        </ul>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {NSHR_SERVICES.map((svc) => (
@@ -120,14 +144,18 @@ export default function NshrSection() {
 
         <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <Link
-            href={SHOP_META.bookingUrl}
+            href={getBooksyServiceBookingUrl("9624401")}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex px-8 py-3.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
             style={{
+              background: "var(--cardinal-red)",
+              color: "#fff",
               border: "1px solid rgba(212,175,55,0.45)",
-              color: "var(--vintage-gold)",
+              boxShadow: "0 0 0 1px rgba(212,175,55,0.2)",
             }}
           >
-            Request NSHR Consultation
+            Book Consultation
           </Link>
           <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
             Mention NSHR when booking — consultations are private and unhurried.
