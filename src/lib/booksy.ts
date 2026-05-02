@@ -14,7 +14,7 @@ export function getBooksyServiceBookingUrl(booksyNumericServiceId: string): stri
   return u.toString();
 }
 
-/** Short embed path used inside the in-app booking iframe */
+/** Short Booksy invite URL (new tab / deep link; not embeddable due to CSP). */
 export function getBooksyShortEmbedUrl(booksyNumericServiceId: string): string {
   return `https://booksy.com/s/hoosier-boy-barbershop/${booksyNumericServiceId}?do=invite`;
 }

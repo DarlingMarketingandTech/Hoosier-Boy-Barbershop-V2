@@ -1,25 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
 import { Drawer } from "vaul";
-import { getDefaultBooksyServiceIdForChair } from "@/lib/constants";
-import { getBooksyShortEmbedUrl } from "@/lib/booksy";
+import { BOOKSY_PROFILE_URL } from "@/lib/booksy";
 import { useBooking } from "@/components/booking-context";
-import { useChairSelectionStore } from "@/stores/chair-selection-store";
 
 export default function BookingDrawer() {
-  const { drawerOpen, closeDrawer, preselectedBooksyServiceId } = useBooking();
-  const selectedBarber = useChairSelectionStore((s) => s.selectedBarber);
-
-  const serviceId = useMemo(() => {
-    if (preselectedBooksyServiceId) return preselectedBooksyServiceId;
-    return getDefaultBooksyServiceIdForChair(selectedBarber);
-  }, [preselectedBooksyServiceId, selectedBarber]);
-
-  const iframeSrc = useMemo(
-    () => getBooksyShortEmbedUrl(serviceId),
-    [serviceId]
-  );
+  const { drawerOpen, closeDrawer } = useBooking();
 
   return (
     <Drawer.Root
@@ -62,7 +48,8 @@ export default function BookingDrawer() {
                 className="mt-0.5 text-xs"
                 style={{ color: "var(--muted-foreground)" }}
               >
-                Booksy opens below — scroll to pick your time inside the frame.
+                We will open our official Booksy profile in a new tab so you can pick your date and
+                time.
               </Drawer.Description>
             </div>
             <Drawer.Close asChild>
@@ -85,20 +72,45 @@ export default function BookingDrawer() {
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
-            <div
-              className="relative flex-1 w-full h-[85vh] overflow-y-auto [-webkit-overflow-scrolling:touch] bg-zinc-900 rounded-t-xl"
-              style={{ WebkitOverflowScrolling: "touch" }}
-            >
-              {drawerOpen ? (
-                <iframe
-                  key={serviceId}
-                  src={iframeSrc}
-                  className="absolute inset-0 h-full w-full border-0"
-                  title="Book Appointment"
-                  loading="lazy"
-                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                />
-              ) : null}
+            <div className="flex-1 w-full min-h-[50vh] flex flex-col items-center justify-center bg-zinc-900 rounded-t-xl p-8 text-center">
+              <div className="mb-6 rounded-full bg-[#D4AF37]/10 p-5 text-[#D4AF37]">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+
+              <h3 className="text-2xl font-playfair text-[#f0ece4] mb-2">Secure Your Spot</h3>
+              <p className="text-sm text-zinc-400 mb-8 max-w-xs">
+                You are being securely routed to our official Booksy profile to select your date and
+                time.
+              </p>
+
+              <a
+                href={BOOKSY_PROFILE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeDrawer}
+                className="inline-flex min-h-[56px] w-full max-w-xs items-center justify-center rounded-full bg-[#f0ece4] px-8 text-base font-bold text-[#080808] transition-all hover:scale-105 active:scale-95"
+              >
+                Open Scheduler
+              </a>
+
+              <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+                Opens in a secure new tab
+              </p>
             </div>
           </div>
         </Drawer.Content>
