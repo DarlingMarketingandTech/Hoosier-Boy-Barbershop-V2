@@ -36,7 +36,7 @@ export async function fetchLatestResultPublicIds(
           Authorization: `Basic ${auth}`,
         },
         body: JSON.stringify({
-          expression: `asset_folder="${RESULTS_FOLDER}"`,
+          expression: `asset_folder="${RESULTS_FOLDER}" AND bytes>100000`,
           sort_by: [{ created_at: "desc" }],
           max_results: maxResults,
         }),

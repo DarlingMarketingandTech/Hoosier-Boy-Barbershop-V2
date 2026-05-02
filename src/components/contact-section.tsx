@@ -9,7 +9,7 @@ import {
   CreditCard,
   Wifi,
 } from "lucide-react";
-import { SHOP_META, WEEKLY_HOURS, type WeekdayLong } from "@/lib/constants";
+import { SHOP_META } from "@/lib/constants";
 import LiveStatusBadge from "@/components/live-status-badge";
 import { formatHoursSummary } from "@/lib/hours";
 
@@ -21,36 +21,7 @@ const AMENITIES: { icon: typeof CarFront; label: string }[] = [
   { icon: Accessibility, label: "Accessible entrance" },
 ];
 
-function formatShiftLine(day: WeekdayLong): string | null {
-  const shifts = WEEKLY_HOURS[day];
-  if (!shifts?.length) return null;
-  const fmt = (hm: string) => {
-    const [h, m] = hm.split(":").map(Number);
-    const suffix = h >= 12 ? "PM" : "AM";
-    const h12 = ((h + 11) % 12) + 1;
-    return `${h12}:${m.toString().padStart(2, "0")} ${suffix}`;
-  };
-  return shifts.map((s) => `${fmt(s.open)}–${fmt(s.close)}`).join(" · ");
-}
-
-const ORDERED_DAYS: WeekdayLong[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
 export default function ContactSection() {
-  const lines = ORDERED_DAYS.map((day) => {
-    const range = formatShiftLine(day);
-    const short = day.slice(0, 3).toUpperCase();
-    if (!range) return `${short}: Closed`;
-    return `${short}: ${range}`;
-  });
-
   const mapsQuery = encodeURIComponent(
     `${SHOP_META.address.street}${SHOP_META.address.suite ? ` ${SHOP_META.address.suite}` : ""}, ${SHOP_META.address.city}, ${SHOP_META.address.state} ${SHOP_META.address.zip}`
   );
@@ -189,17 +160,9 @@ export default function ContactSection() {
           >
             {formatHoursSummary()}
           </p>
-          <ul
-            className="space-y-2 mb-10 text-xs md:text-sm font-medium"
-            style={{
-              fontFamily: "var(--font-mono)",
-              color: "var(--muted-foreground)",
-            }}
-          >
-            {lines.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+          <p className="mb-10 text-xs md:text-sm font-medium font-mono text-zinc-300 leading-relaxed">
+            {SHOP_META.hours.display}
+          </p>
 
           <p
             className="text-[10px] tracking-[0.25em] uppercase mb-4"

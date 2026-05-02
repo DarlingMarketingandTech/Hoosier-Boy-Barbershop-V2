@@ -334,7 +334,7 @@ export const SHOP_META: ShopMeta = {
   email: "HoosierBoyBarbershop@gmail.com",
   hours: {
     display:
-      "Tue–Sat · 8:00 AM – 11:00 AM · 11:30 AM – 2:00 PM · Closed Sun–Mon",
+      "Tuesday – Saturday: 8:00 AM – 11:00 AM | 11:30 AM – 2:00 PM",
   },
   coordinates: {
     lat: 40.04552,

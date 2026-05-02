@@ -77,7 +77,9 @@ export default function Footer() {
             style={{ background: "var(--border)" }}
             aria-hidden="true"
           />
-          <span>{SHOP_META.hours.display}</span>
+          <span className="font-mono text-zinc-300 max-w-[min(100%,22rem)] text-center md:text-left">
+            {SHOP_META.hours.display}
+          </span>
           <span
             className="hidden md:block w-px h-3"
             style={{ background: "var(--border)" }}

@@ -35,7 +35,7 @@ function BarberCard({
   return (
     <article className="flex flex-col md:flex-row items-stretch gap-0 group">
       <div
-        className={`relative w-full md:w-[42%] min-h-[380px] shrink-0 overflow-hidden ${
+        className={`relative aspect-square w-full md:w-[42%] md:max-w-md md:mx-auto shrink-0 overflow-hidden ${
           isEven ? "md:order-first" : "md:order-last"
         }`}
         style={{ background: "var(--card)" }}
@@ -54,8 +54,8 @@ function BarberCard({
           src={getBarberPortraitUrl(portraitKey, "card")}
           alt={`${barber.name} — Hoosier Boy Barbershop`}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-          sizes="(max-width: 768px) 100vw, 38vw"
+          className="object-cover aspect-square grayscale transition-all duration-500 group-hover:grayscale-0 hover:grayscale-0 group-hover:scale-[1.02]"
+          sizes="(max-width: 768px) 100vw, min(480px, 38vw)"
           priority={index === 0}
         />
 

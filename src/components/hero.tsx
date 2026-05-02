@@ -1,15 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import LiveStatusBadge from "@/components/live-status-badge";
 import { useBooking } from "@/components/booking-context";
 import MagneticWrap from "@/components/magnetic-wrap";
 import { SITE_CONFIG, SHOP_META } from "@/lib/constants";
 import { formatHeroHoursBadge } from "@/lib/hours";
-import { DESIGN_BG } from "@/lib/design-assets";
-import { getMasterLogoUrlHero } from "@/components/ui/media-assets";
 
 import { type Variants } from "framer-motion";
 
@@ -36,7 +33,6 @@ const fadeIn: Variants = {
 
 export default function Hero() {
   const { openDrawer } = useBooking();
-  const logoSrc = getMasterLogoUrlHero();
   const [hoursBadge, setHoursBadge] = useState(() =>
     formatHeroHoursBadge(new Date())
   );
@@ -54,32 +50,6 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ background: "var(--background)" }}
     >
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-        <Image
-          src={DESIGN_BG.heroWorkstation}
-          alt=""
-          fill
-          priority
-          quality={88}
-          sizes="100vw"
-          className="object-cover object-[58%_42%] scale-105 sm:scale-100"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(8,8,8,0.72) 0%, rgba(8,8,8,0.82) 42%, rgba(8,8,8,0.9) 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 85% 65% at 50% 38%, rgba(8,8,8,0.15) 0%, rgba(8,8,8,0.55) 100%)",
-          }}
-        />
-      </div>
-
       <div
         className="pointer-events-none absolute inset-0 z-[1]"
         aria-hidden="true"
@@ -99,24 +69,6 @@ export default function Hero() {
       />
 
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center">
-        <motion.div
-          variants={fadeIn}
-          initial="hidden"
-          animate="visible"
-          custom={0.05}
-          className="mb-8"
-        >
-          <Image
-            src={logoSrc}
-            alt="Hoosier Boy Barbershop crest"
-            width={861}
-            height={902}
-            priority
-            className="w-[min(52vw,280px)] md:w-[min(38vw,340px)] h-auto drop-shadow-[0_12px_48px_rgba(212,175,55,0.12)]"
-            sizes="(max-width: 768px) 52vw, 340px"
-          />
-        </motion.div>
-
         <motion.div
           variants={fadeIn}
           initial="hidden"

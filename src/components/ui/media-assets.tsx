@@ -10,8 +10,9 @@ export const SITE_LOGO_PATH = "/images/logo/IMG_1673_1.png";
 export const CLOUDINARY_ASSET_ROOT = "hoosier-boy-barbershop";
 
 export const MEDIA_PUBLIC_IDS = {
-  jimmyPortrait: "jimmy-bio",
-  /** Primary Nate portrait — 4000×3000. */
+  /** `hoosier-boy-barbershop/jimmy` — highest-res editorial frame (MCP). */
+  jimmyPortrait: "20230518_130334",
+  /** `hoosier-boy-barbershop/nate` — primary headshot (MCP). */
   natePortrait: "20230518_134718",
   /** Editorial lookbook fallbacks — newest six from `/results` (sync with MCP / search). */
   resultsFallback: [
@@ -23,6 +24,8 @@ export const MEDIA_PUBLIC_IDS = {
     "618656543_18093070781479062_3715794425192548970_n",
   ],
   shopInteriorHero: "20230518_130223",
+  /** Shop floor — `shop-interior` (Cloudinary MCP). Story section parallax. */
+  storyParallaxInterior: "20230518_134504",
 } as const;
 
 export type CloudinaryTransformOptions = {
@@ -93,8 +96,8 @@ export function getBarberPortraitUrl(
       : MEDIA_PUBLIC_IDS.natePortrait;
   const transforms =
     variant === "card"
-      ? ["w_900", "h_1125", "c_fill", "g_auto", "dpr_auto"]
-      : ["w_1600", "c_limit", "dpr_auto"];
+      ? ["w_900", "h_900", "c_fill", "g_face", "dpr_auto"]
+      : ["w_1600", "h_1600", "c_fill", "g_face", "dpr_auto"];
   return cloudinaryImageUrl(id, { transforms });
 }
 
@@ -104,8 +107,22 @@ export function getLookbookSlideUrl(publicId: string): string {
   });
 }
 
+/** 4:5 editorial crop for lookbook grid (`c_fill` + `g_auto` per Cloudinary best practice). */
+export function getLookbookGridUrl(publicId: string): string {
+  return cloudinaryImageUrl(publicId, {
+    transforms: ["w_960", "h_1200", "c_fill", "g_auto", "dpr_auto"],
+  });
+}
+
 export function getShopInteriorTextureUrl(): string {
   return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.shopInteriorHero, {
     transforms: ["w_1920", "h_1080", "c_fill", "g_auto", "e_blur:1200", "q_auto:low"],
+  });
+}
+
+/** Full-quality shop interior for fixed parallax backgrounds (Story / Bear Repair). */
+export function getStorySectionParallaxBgUrl(): string {
+  return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.storyParallaxInterior, {
+    transforms: ["w_2560", "h_1440", "c_fill", "g_auto", "dpr_auto"],
   });
 }

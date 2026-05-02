@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { DESIGN_BG } from "@/lib/design-assets";
+import { getStorySectionParallaxBgUrl } from "@/components/ui/media-assets";
 
 /**
  * StorySection — "The Bear Repair" scrollytelling narrative.
@@ -13,6 +12,7 @@ export default function StorySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
+  const storyBgUrl = getStorySectionParallaxBgUrl();
 
   const logoInView = useInView(logoRef, { once: true, margin: "-15%" });
   const copyInView = useInView(copyRef, { once: true, margin: "-15%" });
@@ -25,21 +25,11 @@ export default function StorySection() {
       style={{ background: "var(--background)" }}
     >
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-        <Image
-          src={DESIGN_BG.storyLogoGlass}
-          alt=""
-          fill
-          quality={82}
-          sizes="100vw"
-          className="object-cover object-[72%_center] opacity-90"
-        />
         <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(115deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.88) 48%, rgba(8,8,8,0.78) 100%)",
-          }}
+          className="absolute inset-0 bg-fixed bg-cover bg-center"
+          style={{ backgroundImage: `url(${storyBgUrl})` }}
         />
+        <div className="absolute inset-0 bg-black/80" />
       </div>
 
       {/* Subtle gold gradient bleed */}
