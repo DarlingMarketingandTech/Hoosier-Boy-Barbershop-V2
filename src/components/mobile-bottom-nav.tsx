@@ -61,9 +61,9 @@ export default function MobileBottomNav() {
                     vibrateLight();
                     openDrawer(null);
                   }}
-                  className="flex w-full flex-col items-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
+                  className="flex min-h-[44px] w-full flex-col items-center justify-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
                   style={{ color: "var(--cardinal-red)" }}
-                  aria-label="Open booking"
+                  aria-label="Open booking drawer to schedule an appointment"
                 >
                   <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
                   <span className="text-[9px] font-bold uppercase tracking-[0.14em]">{label}</span>
@@ -73,9 +73,10 @@ export default function MobileBottomNav() {
                   href={INSTAGRAM_PROFILE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-full flex-col items-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
+                  className="flex min-h-[44px] w-full flex-col items-center justify-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
                   style={{ color: "var(--muted-foreground)" }}
                   onClick={vibrateLight}
+                  aria-label="Open Hoosier Boy Barbershop on Instagram"
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                   <span className="text-[9px] font-semibold uppercase tracking-[0.12em]">{label}</span>
@@ -84,8 +85,17 @@ export default function MobileBottomNav() {
                 <button
                   type="button"
                   onClick={() => href && scrollToHash(href)}
-                  className="flex w-full flex-col items-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
+                  className="flex min-h-[44px] w-full flex-col items-center justify-center gap-0.5 rounded-xl py-2 touch-manipulation active:scale-[0.97] transition-transform"
                   style={{ color: "var(--muted-foreground)" }}
+                  aria-label={
+                    id === "home"
+                      ? "Scroll to home"
+                      : id === "services"
+                        ? "Scroll to services section"
+                        : id === "reviews"
+                          ? "Scroll to testimonials"
+                          : `Navigate to ${label}`
+                  }
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
                   <span className="text-[9px] font-semibold uppercase tracking-[0.12em]">{label}</span>

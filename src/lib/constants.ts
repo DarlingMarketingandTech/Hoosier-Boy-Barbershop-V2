@@ -116,10 +116,10 @@ export const BARBERS: Barber[] = [
     specialty: "Classic Cut & Beard Architecture",
     instagram: "le_petit_bison",
     serviceIds: [
-      "classic-cut",
-      "beard-trim-jimmy",
-      "the-hour-jimmy",
-      "hair-beard-jimmy",
+      "jimmy-haircut",
+      "jimmy-beard-trim",
+      "jimmy-the-hour",
+      "jimmy-hair-beard",
     ],
   },
   {
@@ -131,10 +131,10 @@ export const BARBERS: Barber[] = [
     specialty: "Senior Fades · NSHR Lead",
     instagram: "goutycuts",
     serviceIds: [
-      "haircut-nate",
-      "beard-trim-nate",
-      "the-hour-nate",
-      "hair-beard-nate",
+      "nate-haircut",
+      "nate-beard-trim",
+      "nate-the-hour",
+      "nate-hair-beard",
       "nshr-consult",
       "nshr-install",
       "nshr-maintain",
@@ -151,102 +151,121 @@ export const HAIRCUT_BOOKSY_ID = {
   nate: "7883889",
 } as const;
 
-/** Official shop Instagram (handles + profile URL stay in sync for schema/footer). */
-export const INSTAGRAM_PROFILE_URL =
-  "https://www.instagram.com/hoosierboybarbershop/" as const;
+/** Chair filter — shared by testimonials, service grid, and booking defaults */
+export type SelectedBarber = TestimonialStaffFilter;
 
-/** Core menu — prices & Booksy ids verified via Booksy business profile (Firecrawl, May 2026). */
-export const SERVICES: Service[] = [
-  {
-    id: "classic-cut",
-    name: "Haircut",
-    description:
-      "Standard haircut polished with a straight razor shave on the back of the neck — Jimmy.",
-    price: 45,
-    duration: 30,
-    category: "cut",
-    booksyServiceId: "4927560",
-  },
-  {
-    id: "beard-trim-jimmy",
-    name: "Beard Trim",
-    description:
-      "Shape, taper, and hot-towel finish with straight razor shave — Jimmy.",
-    price: 45,
-    duration: 30,
-    category: "shave",
-    booksyServiceId: "4927561",
-  },
-  {
-    id: "the-hour-jimmy",
-    name: "The Hour",
-    description:
-      "Long-form slot for long hair, premium cuts, designs, or new guests who need a thorough consult — Jimmy.",
-    price: 80,
-    duration: 60,
-    category: "cut",
-    booksyServiceId: "4927562",
-  },
-  {
-    id: "hair-beard-jimmy",
-    name: "Hair + Beard",
-    description:
-      "Signature haircut plus classic beard trim and straight razor shave — Jimmy.",
-    price: 80,
-    duration: 60,
-    category: "cut",
-    booksyServiceId: "4927569",
-  },
-  {
-    id: "haircut-nate",
-    name: "Haircut",
-    description:
-      "Standard haircut polished with a straight razor shave on the back of the neck — Nate.",
-    price: 50,
-    duration: 30,
-    category: "cut",
-    booksyServiceId: "7883889",
-  },
-  {
-    id: "beard-trim-nate",
-    name: "Beard Trim",
-    description:
-      "Shape, taper, and hot-towel finish with straight razor shave — Nate.",
-    price: 50,
-    duration: 30,
-    category: "shave",
-    booksyServiceId: "7883891",
-  },
-  {
-    id: "the-hour-nate",
-    name: "The Hour",
-    description:
-      "Long-form slot for long hair, premium cuts, designs, or new guests who need a thorough consult — Nate.",
-    price: 85,
-    duration: 60,
-    category: "cut",
-    booksyServiceId: "7883894",
-  },
-  {
-    id: "hair-beard-nate",
-    name: "Hair + Beard",
-    description:
-      "Signature haircut plus classic beard trim and straight razor shave — Nate.",
-    price: 85,
-    duration: 60,
-    category: "cut",
-    booksyServiceId: "7883896",
-  },
+export type CoreMenuSlug = "haircut" | "beard-trim" | "the-hour" | "hair-beard";
+
+export const CORE_MENU_ORDER: CoreMenuSlug[] = [
+  "haircut",
+  "beard-trim",
+  "the-hour",
+  "hair-beard",
 ];
 
-/** Nate · Non-Surgical Hair Replacement — numeric pricing supplied later */
+type BarberOffer = {
+  priceUsd: number;
+  booksyServiceId: string;
+  description: string;
+};
+
+/** Canonical core menu — per-barber price and Booksy service id */
+export const CORE_MENU: Record<
+  CoreMenuSlug,
+  {
+    name: string;
+    category: ServiceCategory;
+    duration: number;
+    shopDescription: string;
+    jimmy: BarberOffer;
+    nate: BarberOffer;
+  }
+> = {
+  haircut: {
+    name: "Haircut",
+    category: "cut",
+    duration: 30,
+    shopDescription:
+      "Standard haircut with a straight razor finish on the neckline — choose a chair for barber-specific notes and timing.",
+    jimmy: {
+      priceUsd: 45,
+      booksyServiceId: "4927560",
+      description:
+        "Standard haircut polished with a straight razor shave on the back of the neck — Jimmy.",
+    },
+    nate: {
+      priceUsd: 50,
+      booksyServiceId: "7883889",
+      description:
+        "Standard haircut polished with a straight razor shave on the back of the neck — Nate.",
+    },
+  },
+  "beard-trim": {
+    name: "Beard Trim",
+    category: "shave",
+    duration: 30,
+    shopDescription:
+      "Shape, taper, and hot-towel finish with straight razor cleanup — pricing follows the chair.",
+    jimmy: {
+      priceUsd: 45,
+      booksyServiceId: "4927561",
+      description:
+        "Shape, taper, and hot-towel finish with straight razor shave — Jimmy.",
+    },
+    nate: {
+      priceUsd: 50,
+      booksyServiceId: "7883891",
+      description:
+        "Shape, taper, and hot-towel finish with straight razor shave — Nate.",
+    },
+  },
+  "the-hour": {
+    name: "The Hour",
+    category: "cut",
+    duration: 60,
+    shopDescription:
+      "Long-form slot for long hair, premium cuts, designs, or new guests who need a thorough consult.",
+    jimmy: {
+      priceUsd: 80,
+      booksyServiceId: "4927562",
+      description:
+        "Long-form slot for long hair, premium cuts, designs, or new guests who need a thorough consult — Jimmy.",
+    },
+    nate: {
+      priceUsd: 85,
+      booksyServiceId: "7883894",
+      description:
+        "Long-form slot for long hair, premium cuts, designs, or new guests who need a thorough consult — Nate.",
+    },
+  },
+  "hair-beard": {
+    name: "Hair + Beard",
+    category: "cut",
+    duration: 60,
+    shopDescription:
+      "Signature haircut plus beard trim and straight razor shave — chair-specific finish and pacing.",
+    jimmy: {
+      priceUsd: 80,
+      booksyServiceId: "4927569",
+      description:
+        "Signature haircut plus classic beard trim and straight razor shave — Jimmy.",
+    },
+    nate: {
+      priceUsd: 85,
+      booksyServiceId: "7883896",
+      description:
+        "Signature haircut plus classic beard trim and straight razor shave — Nate.",
+    },
+  },
+};
+
+/** Nate · Non-Surgical Hair Replacement — quote-only until list prices are finalized */
 export interface NSHRService {
   id: string;
   code: string;
   name: string;
   description: string;
   durationMin: number;
-  /** Populate when pricing is finalized */
   priceUsd?: number;
   booksyServiceId?: string;
 }
@@ -255,7 +274,7 @@ export const NSHR_SERVICES: NSHRService[] = [
   {
     id: "nshr-consult",
     code: "NSHR-CONSULT",
-    name: "Consultation",
+    name: "NSHR Consult",
     description:
       "Private scalp assessment, density mapping, lifestyle fit, and a written plan before any installation work begins.",
     durationMin: 30,
@@ -264,7 +283,7 @@ export const NSHR_SERVICES: NSHRService[] = [
   {
     id: "nshr-install",
     code: "NSHR-INSTALL",
-    name: "Installation",
+    name: "NSHR Install",
     description:
       "Medical-grade adhesion + directional styling pass so the unit disappears into your existing profile.",
     durationMin: 180,
@@ -273,7 +292,7 @@ export const NSHR_SERVICES: NSHRService[] = [
   {
     id: "nshr-maintain",
     code: "NSHR-MAINTAIN",
-    name: "Maintenance",
+    name: "NSHR Maintenance",
     description:
       "Re-bond edges, fiber refresh, and detailing so the system stays invisible week after week.",
     durationMin: 60,
@@ -281,37 +300,136 @@ export const NSHR_SERVICES: NSHRService[] = [
   },
 ];
 
-/** Rows for the intelligent booking drawer (menu + NSHR). */
-export type DrawerBookableRow = {
-  key: string;
+/** Row model for the marketing service grid (chair-aware) */
+export type ServiceGridRow = {
+  id: string;
   name: string;
   description: string;
-  durationMin: number;
-  price: number | null;
+  category: ServiceCategory;
+  duration: number;
+  priceLabel: string;
   booksyServiceId: string;
   quoteOnly?: boolean;
 };
 
-export const DRAWER_BOOKABLE: DrawerBookableRow[] = [
-  ...SERVICES.filter((s) => s.booksyServiceId).map((s) => ({
-    key: s.id,
-    name: s.name,
-    description: s.description,
-    durationMin: s.duration,
-    price: s.price ?? null,
-    booksyServiceId: s.booksyServiceId!,
-    quoteOnly: false,
-  })),
-  ...NSHR_SERVICES.filter((n) => n.booksyServiceId).map((n) => ({
-    key: n.id,
-    name: n.name,
-    description: n.description,
-    durationMin: n.durationMin,
-    price: n.priceUsd ?? null,
-    booksyServiceId: n.booksyServiceId!,
-    quoteOnly: true,
-  })),
-];
+export function getCoreServicePriceBounds(): { min: number; max: number } {
+  const vals: number[] = [];
+  for (const slug of CORE_MENU_ORDER) {
+    const m = CORE_MENU[slug];
+    vals.push(m.jimmy.priceUsd, m.nate.priceUsd);
+  }
+  return { min: Math.min(...vals), max: Math.max(...vals) };
+}
+
+export function getDefaultBooksyServiceIdForChair(
+  chair: TestimonialStaffFilter
+): string {
+  if (chair === "jimmy") return HAIRCUT_BOOKSY_ID.jimmy;
+  if (chair === "nate") return HAIRCUT_BOOKSY_ID.nate;
+  return HAIRCUT_BOOKSY_ID.jimmy;
+}
+
+export function getServiceRowsForChair(
+  chair: TestimonialStaffFilter
+): ServiceGridRow[] {
+  if (chair === "all") {
+    return CORE_MENU_ORDER.map((slug) => {
+      const m = CORE_MENU[slug];
+      const min = Math.min(m.jimmy.priceUsd, m.nate.priceUsd);
+      const booksyServiceId =
+        m.jimmy.priceUsd <= m.nate.priceUsd
+          ? m.jimmy.booksyServiceId
+          : m.nate.booksyServiceId;
+      return {
+        id: `shop-${slug}`,
+        name: m.name,
+        description: m.shopDescription,
+        category: m.category,
+        duration: m.duration,
+        priceLabel: `From $${min}`,
+        booksyServiceId,
+      };
+    });
+  }
+
+  if (chair === "jimmy") {
+    return CORE_MENU_ORDER.map((slug) => {
+      const m = CORE_MENU[slug];
+      const o = m.jimmy;
+      return {
+        id: `jimmy-${slug}`,
+        name: m.name,
+        description: o.description,
+        category: m.category,
+        duration: m.duration,
+        priceLabel: `$${o.priceUsd}`,
+        booksyServiceId: o.booksyServiceId,
+      };
+    });
+  }
+
+  const coreRows: ServiceGridRow[] = CORE_MENU_ORDER.map((slug) => {
+    const m = CORE_MENU[slug];
+    const o = m.nate;
+    return {
+      id: `nate-${slug}`,
+      name: m.name,
+      description: o.description,
+      category: m.category,
+      duration: m.duration,
+      priceLabel: `$${o.priceUsd}`,
+      booksyServiceId: o.booksyServiceId,
+    };
+  });
+
+  const nshrRows: ServiceGridRow[] = NSHR_SERVICES.filter((n) => n.booksyServiceId).map(
+    (n) => ({
+      id: n.id,
+      name: n.name,
+      description: n.description,
+      category: "specialist" as const,
+      duration: n.durationMin,
+      priceLabel: "Quote in Booksy",
+      booksyServiceId: n.booksyServiceId!,
+      quoteOnly: true,
+    })
+  );
+
+  return [...coreRows, ...nshrRows];
+}
+
+function buildLegacyServices(): Service[] {
+  const out: Service[] = [];
+  for (const slug of CORE_MENU_ORDER) {
+    const m = CORE_MENU[slug];
+    out.push({
+      id: `jimmy-${slug}`,
+      name: m.name,
+      description: m.jimmy.description,
+      price: m.jimmy.priceUsd,
+      duration: m.duration,
+      category: m.category,
+      booksyServiceId: m.jimmy.booksyServiceId,
+    });
+    out.push({
+      id: `nate-${slug}`,
+      name: m.name,
+      description: m.nate.description,
+      price: m.nate.priceUsd,
+      duration: m.duration,
+      category: m.category,
+      booksyServiceId: m.nate.booksyServiceId,
+    });
+  }
+  return out;
+}
+
+/** Flat list — legacy consumers (analytics, exports); prefer CORE_MENU + helpers for new UI */
+export const SERVICES: Service[] = buildLegacyServices();
+
+/** Official shop Instagram (handles + profile URL stay in sync for schema/footer). */
+export const INSTAGRAM_PROFILE_URL =
+  "https://www.instagram.com/hoosierboybarbershop/" as const;
 
 export const SITE_CONFIG = {
   name: "Hoosier Boy",

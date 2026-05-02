@@ -1,9 +1,26 @@
 "use client";
 
 import Image from "next/image";
+import { useMemo } from "react";
+import { LayoutGroup, motion } from "framer-motion";
 import { useBooking } from "@/components/booking-context";
-import { SERVICES, type ServiceCategory } from "@/lib/constants";
+import { useChairSelectionStore } from "@/stores/chair-selection-store";
+import {
+  getServiceRowsForChair,
+  type ServiceCategory,
+  type TestimonialStaffFilter,
+} from "@/lib/constants";
 import { DESIGN_BG } from "@/lib/design-assets";
+
+const CHAIR_SEGMENTS: {
+  id: TestimonialStaffFilter;
+  label: string;
+  ariaLabel: string;
+}[] = [
+  { id: "all", label: "The Shop", ariaLabel: "Show shop pricing for all chairs" },
+  { id: "jimmy", label: "Jimmy's Chair", ariaLabel: "Show services and prices for Jimmy's chair" },
+  { id: "nate", label: "Nate's Chair", ariaLabel: "Show services and prices for Nate's chair" },
+];
 
 function CategoryBadge({ category }: { category: ServiceCategory }) {
   const labels: Record<ServiceCategory, string> = {
@@ -40,6 +57,14 @@ function CategoryBadge({ category }: { category: ServiceCategory }) {
 
 export default function ServiceGrid() {
   const { openDrawer } = useBooking();
+  const selectedBarber = useChairSelectionStore((s) => s.selectedBarber);
+  const setSelectedBarber = useChairSelectionStore((s) => s.setSelectedBarber);
+
+  const rows = useMemo(
+    () => getServiceRowsForChair(selectedBarber),
+    [selectedBarber]
+  );
+
   return (
     <section
       id="services"
@@ -72,6 +97,55 @@ export default function ServiceGrid() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
+        <div
+          className="sticky z-30 mb-8 rounded-xl border p-1.5 backdrop-blur-md md:mb-10"
+          style={{
+            top: "max(5.5rem, calc(env(safe-area-inset-top, 0px) + 4.5rem))",
+            borderColor: "var(--border)",
+            background: "rgba(8,8,8,0.82)",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.35)",
+          }}
+          role="tablist"
+          aria-label="Choose shop or barber chair for pricing"
+        >
+          <LayoutGroup id="chair-segments">
+          <div className="relative flex gap-0.5 rounded-lg p-0.5">
+            {CHAIR_SEGMENTS.map((seg) => {
+              const on = selectedBarber === seg.id;
+              return (
+                <button
+                  key={seg.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls="services-menu-grid"
+                  id={`chair-tab-${seg.id}`}
+                  aria-label={seg.ariaLabel}
+                  onClick={() => setSelectedBarber(seg.id)}
+                  className="relative z-[1] min-h-[44px] flex-1 rounded-md px-2 py-2 text-center text-[10px] font-bold uppercase tracking-[0.12em] transition-colors sm:text-[11px] sm:tracking-[0.14em]"
+                  style={{
+                    color: on ? "#080808" : "var(--muted-foreground)",
+                  }}
+                >
+                  {on ? (
+                    <motion.span
+                      layoutId="chairSegmentBg"
+                      className="absolute inset-0 rounded-md"
+                      style={{
+                        background: "var(--vintage-gold)",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
+                      }}
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    />
+                  ) : null}
+                  <span className="relative z-[2]">{seg.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          </LayoutGroup>
+        </div>
+
         <div className="mb-14">
           <p
             className="text-xs font-semibold tracking-[0.3em] uppercase mb-4"
@@ -96,29 +170,34 @@ export default function ServiceGrid() {
           <span className="sera-divider mt-6" aria-hidden="true" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px"
-          style={{ background: "var(--border)" }}>
-          {SERVICES.map((service) => (
+        <div
+          id="services-menu-grid"
+          role="tabpanel"
+          aria-labelledby={`chair-tab-${selectedBarber}`}
+          className="grid grid-cols-1 gap-px md:grid-cols-2"
+          style={{ background: "var(--border)" }}
+        >
+          {rows.map((service) => (
             <article
               key={service.id}
-              className="sera-card group p-7 flex flex-col justify-between min-h-[240px]"
+              className="sera-card group flex min-h-[240px] flex-col justify-between p-7"
               style={{ border: "none" }}
             >
               <div>
-                <div className="flex items-start justify-between mb-3">
+                <div className="mb-3 flex items-start justify-between">
                   <CategoryBadge category={service.category} />
                   <span
-                    className="text-2xl font-black tabular-nums"
+                    className="max-w-[55%] text-right text-2xl font-black tabular-nums leading-tight"
                     style={{
                       fontFamily: "var(--font-playfair)",
                       color: "var(--foreground)",
                     }}
                   >
-                    {service.price != null ? `$${service.price}` : "—"}
+                    {service.quoteOnly ? "Quote" : service.priceLabel}
                   </span>
                 </div>
                 <h3
-                  className="text-xl font-bold mt-3 mb-2 group-hover:text-vintage-gold transition-colors duration-300"
+                  className="mt-3 mb-2 text-xl font-bold transition-colors duration-300 group-hover:text-vintage-gold"
                   style={{ fontFamily: "var(--font-playfair)", color: "var(--foreground)" }}
                 >
                   {service.name}
@@ -132,28 +211,25 @@ export default function ServiceGrid() {
               </div>
 
               <div
-                className="flex items-center justify-between mt-6 pt-4"
-                style={{ borderTop: "1px solid var(--border)" }}
+                className="mt-6 flex items-center justify-between border-t pt-4"
+                style={{ borderColor: "var(--border)" }}
               >
                 <span
-                  className="text-[10px] tracking-widest uppercase"
+                  className="text-[10px] uppercase tracking-widest"
                   style={{
                     fontFamily: "var(--font-mono)",
                     color: "var(--muted-foreground)",
                   }}
                 >
                   QTY: 1 {service.category.toUpperCase()}
-                  {service.price != null ? ` · $${service.price}` : ""}
+                  {service.quoteOnly ? " · Quote in Booksy" : ` · ${service.priceLabel}`}
                 </span>
                 <button
                   type="button"
                   data-cursor="Book"
-                  disabled={!service.booksyServiceId}
-                  onClick={() =>
-                    service.booksyServiceId &&
-                    openDrawer(service.booksyServiceId)
-                  }
-                  className="text-[10px] font-medium tracking-[0.18em] uppercase transition-colors duration-300 group-hover:text-vintage-gold disabled:opacity-40"
+                  aria-label={`Book ${service.name} on Booksy`}
+                  onClick={() => openDrawer(service.booksyServiceId)}
+                  className="min-h-[44px] px-2 text-[10px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 group-hover:text-vintage-gold touch-manipulation"
                   style={{ color: "var(--muted-foreground)" }}
                 >
                   Book →
@@ -164,11 +240,11 @@ export default function ServiceGrid() {
         </div>
 
         <p
-          className="mt-10 text-xs text-center md:text-left max-w-xl leading-relaxed"
+          className="mt-10 max-w-xl text-center text-xs leading-relaxed md:text-left"
           style={{ color: "var(--muted-foreground)" }}
         >
-          Non-Surgical Hair Replacement lives under our Specialist tier — see the NSHR lab for Nate&apos;s
-          consultation-to-maintenance workflow.
+          Non-Surgical Hair Replacement lives under our Specialist tier — see the NSHR lab for
+          Nate&apos;s consultation-to-maintenance workflow.
         </p>
       </div>
     </section>

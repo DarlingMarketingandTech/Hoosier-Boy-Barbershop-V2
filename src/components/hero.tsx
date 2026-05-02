@@ -164,7 +164,8 @@ export default function Hero() {
               type="button"
               onClick={() => openDrawer(null)}
               data-cursor="Book"
-              className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200"
+              aria-label="Open booking to schedule a visit"
+              className="min-h-[44px] px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200"
               style={{ background: "var(--cardinal-red)", color: "#fff" }}
               onMouseOver={(e) => {
                 (e.currentTarget as HTMLElement).style.background = "var(--cardinal-red-hover)";
@@ -179,7 +180,8 @@ export default function Hero() {
           <a
             href="#services"
             data-cursor="View"
-            className="px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200 border"
+            aria-label="Scroll to services menu"
+            className="inline-flex min-h-[44px] items-center justify-center px-8 py-3.5 text-sm font-bold tracking-[0.12em] uppercase rounded transition-all duration-200 border"
             style={{
               borderColor: "var(--border)",
               color: "var(--foreground)",
@@ -198,7 +200,8 @@ export default function Hero() {
           <a
             href="#barbers"
             data-cursor="View"
-            className="px-8 py-3.5 text-sm font-medium tracking-[0.12em] uppercase rounded border transition-all duration-200"
+            aria-label="Scroll to meet the barbers"
+            className="inline-flex min-h-[44px] items-center justify-center px-8 py-3.5 text-sm font-medium tracking-[0.12em] uppercase rounded border transition-all duration-200"
             style={{
               borderColor: "var(--border)",
               color: "var(--muted-foreground)",

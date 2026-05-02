@@ -10,7 +10,8 @@ export default function ContactBookCta() {
       <button
         type="button"
         onClick={() => openDrawer(null)}
-        className="inline-flex w-fit px-6 py-3 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
+        aria-label="Open booking to schedule on Booksy"
+        className="inline-flex min-h-[44px] w-fit items-center justify-center px-6 py-3 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
         style={{ background: "var(--cardinal-red)", color: "#fff" }}
       >
         Book on Booksy

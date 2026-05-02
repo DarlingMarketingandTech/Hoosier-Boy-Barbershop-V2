@@ -10,10 +10,12 @@ export const SITE_LOGO_PATH = "/images/logo/IMG_1673_1.png";
 export const CLOUDINARY_ASSET_ROOT = "hoosier-boy-barbershop";
 
 export const MEDIA_PUBLIC_IDS = {
-  /** `hoosier-boy-barbershop/jimmy` — highest-res editorial frame (MCP). */
-  jimmyPortrait: "20230518_130334",
-  /** `hoosier-boy-barbershop/nate` — primary headshot (MCP). */
-  natePortrait: "20230518_134718",
+  /** `hoosier-boy-barbershop/jimmy` — Meet the Barbers portrait. */
+  jimmyPortrait: "IMG_20230519_110043_236",
+  /** `hoosier-boy-barbershop/nate` — Meet the Barbers bio portrait. */
+  natePortrait: "nate-bio",
+  /** `hoosier-boy-barbershop/jimmy-and-nate` — duo / team frame (MCP, highest bytes). */
+  jimmyAndNateTeamPhoto: "20230518_134642",
   /** Editorial lookbook fallbacks — newest six from `/results` (sync with MCP / search). */
   resultsFallback: [
     "f98c405ebd384bad88c1db718327f8-hoosier-boy-barbershop-inspiration-911ba0258b20416f9ed224ed22589b-booksy",
@@ -96,9 +98,16 @@ export function getBarberPortraitUrl(
       : MEDIA_PUBLIC_IDS.natePortrait;
   const transforms =
     variant === "card"
-      ? ["w_900", "h_900", "c_fill", "g_face", "dpr_auto"]
-      : ["w_1600", "h_1600", "c_fill", "g_face", "dpr_auto"];
+      ? ["w_900", "h_900", "c_fill", "g_face"]
+      : ["w_1600", "h_1600", "c_fill", "g_face"];
   return cloudinaryImageUrl(id, { transforms });
+}
+
+/** Duo shot — AI composition via `g_auto` (multiple subjects). */
+export function getTeamPhotoUrl(): string {
+  return cloudinaryImageUrl(MEDIA_PUBLIC_IDS.jimmyAndNateTeamPhoto, {
+    transforms: ["w_1200", "h_800", "c_fill", "g_auto"],
+  });
 }
 
 export function getLookbookSlideUrl(publicId: string): string {

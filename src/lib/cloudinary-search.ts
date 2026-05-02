@@ -15,7 +15,7 @@ type CloudinarySearchResponse = {
  * Falls back to committed IDs when credentials/network/search fail.
  */
 export async function fetchLatestResultPublicIds(
-  maxResults = 6
+  maxResults = 24
 ): Promise<string[]> {
   const cloud = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const key = process.env.CLOUDINARY_API_KEY;

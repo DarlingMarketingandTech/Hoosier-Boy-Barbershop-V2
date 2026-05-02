@@ -147,7 +147,8 @@ export default function NshrSection() {
             href={getBooksyServiceBookingUrl("9624401")}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex px-8 py-3.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
+            aria-label="Book NSHR consultation on Booksy in a new tab"
+            className="inline-flex min-h-[44px] items-center justify-center px-8 py-3.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200"
             style={{
               background: "var(--cardinal-red)",
               color: "#fff",

@@ -97,7 +97,7 @@ export default function Navbar() {
               type="button"
               onClick={() => openDrawer(null)}
               data-cursor="Book"
-              className="flex items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              className="flex min-h-[44px] items-center gap-2 px-5 py-2.5 rounded text-xs font-bold tracking-[0.12em] uppercase transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               style={{
                 background: "var(--cardinal-red)",
                 color: "#fff",

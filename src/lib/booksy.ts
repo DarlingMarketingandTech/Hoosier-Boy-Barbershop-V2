@@ -14,5 +14,10 @@ export function getBooksyServiceBookingUrl(booksyNumericServiceId: string): stri
   return u.toString();
 }
 
+/** Short embed path used inside the in-app booking iframe */
+export function getBooksyShortEmbedUrl(booksyNumericServiceId: string): string {
+  return `https://booksy.com/s/hoosier-boy-barbershop/${booksyNumericServiceId}?do=invite`;
+}
+
 export const BOOKSY_PROFILE_URL =
   "https://booksy.com/en-us/746827_hoosier-boy-barbershop_barber-shop_19578_noblesville?do=invite";

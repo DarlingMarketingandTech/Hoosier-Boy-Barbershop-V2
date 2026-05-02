@@ -46,7 +46,7 @@ export default function CustomCursor() {
   useEffect(() => {
     const mq = window.matchMedia("(pointer: fine)");
     if (!mq.matches) return;
-    setShowCursor(true);
+    queueMicrotask(() => setShowCursor(true));
     window.addEventListener("mousemove", onMouseMove);
     return () => window.removeEventListener("mousemove", onMouseMove);
   }, [onMouseMove]);

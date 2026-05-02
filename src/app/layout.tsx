@@ -1,6 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { INSTAGRAM_PROFILE_URL, SERVICES, SHOP_META } from "@/lib/constants";
+import {
+  CORE_MENU,
+  CORE_MENU_ORDER,
+  INSTAGRAM_PROFILE_URL,
+  SHOP_META,
+  getCoreServicePriceBounds,
+} from "@/lib/constants";
 import { buildOpeningHoursSpecification } from "@/lib/json-ld";
 import { getSiteLogoAbsoluteUrl, SITE_LOGO_PATH } from "@/components/ui/media-assets";
 import BookingDrawer from "@/components/booking-drawer";
@@ -34,9 +40,16 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Hoosier Boy Barbershop — Noblesville, IN",
+  title: {
+    default: "Hoosier Boy Barbershop — Noblesville, IN",
+    template: "%s · Hoosier Boy Barbershop",
+  },
   description:
     "Hoosier Boy Barbershop in Noblesville delivers precision haircuts, beard trims, and Nate Gouty's Non-Surgical Hair Replacement program. Book your chair online.",
+  alternates: {
+    canonical: siteUrl,
+  },
+  robots: { index: true, follow: true },
   icons: {
     icon: [{ url: faviconUrl, type: "image/png" }],
     apple: [
@@ -76,16 +89,39 @@ export const metadata: Metadata = {
   },
 };
 
-const haircutPrices = SERVICES.filter((s) => s.price != null).map((s) => s.price!);
-const minPrice = Math.min(...haircutPrices);
-const maxPrice = Math.max(...haircutPrices);
+const { min: minPrice, max: maxPrice } = getCoreServicePriceBounds();
 
 const schemaLogoUrl = getSiteLogoAbsoluteUrl(siteUrl);
+
+const hasOfferCatalog = {
+  "@type": "OfferCatalog",
+  name: "Core grooming menu",
+  itemListElement: CORE_MENU_ORDER.map((slug, index) => {
+    const m = CORE_MENU[slug];
+    const floor = Math.min(m.jimmy.priceUsd, m.nate.priceUsd);
+    return {
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Offer",
+        name: m.name,
+        description: m.shopDescription,
+        priceCurrency: "USD",
+        price: floor,
+        itemOffered: {
+          "@type": "Service",
+          name: m.name,
+          description: m.shopDescription,
+        },
+      },
+    };
+  }),
+};
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "additionalType": "https://schema.org/HairSalon",
+  additionalType: "https://schema.org/HairSalon",
   "@id": `${siteUrl}/#barbershop`,
   name: SHOP_META.name,
   url: siteUrl,
@@ -94,9 +130,10 @@ const jsonLd = {
     "@type": "ImageObject",
     url: schemaLogoUrl,
   },
-  telephone: SHOP_META.phone,
+  telephone: "+13179001290",
   email: SHOP_META.email,
   priceRange: `$${minPrice}–$${maxPrice}`,
+  hasOfferCatalog,
   address: {
     "@type": "PostalAddress",
     streetAddress,
